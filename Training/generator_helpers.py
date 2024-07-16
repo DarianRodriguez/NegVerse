@@ -68,6 +68,7 @@ def generate_on_prompts(generator, prompts, temperature=1,
     if len(prompts) == 1:
         preds_list = [preds_list]
     preds_list_cleaned = []
+
     for prompt, preds in zip(prompts, preds_list):
         prev_list = set()
         for s in preds:

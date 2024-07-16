@@ -71,6 +71,8 @@ class PerturbationGenerator:
 
     def generate_on_prompts(self, prompts, temperature=1, num_beams=None, n=3, do_sample=True, batch_size=128, num_return_sequences=3):
         preds_list = self.batched_generate(prompts, temperature=temperature, num_beams=num_beams, do_sample=do_sample, batch_size=batch_size, num_return_sequences=num_return_sequences)
+        print("HERE")
+        print(preds_list)
         if len(prompts) == 1:
             preds_list = [preds_list]
         preds_list_cleaned = []
