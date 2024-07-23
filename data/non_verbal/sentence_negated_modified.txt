@@ -1,0 +1,103 @@
+negated	original
+Not all people have had the opportunities you have had.	Every person has had the opportunities you have had.
+Not all people have had the opportunities you have had.	All people have had the opportunities you have had.
+No one has had the opportunities you have had.	All people have had the opportunities you have had.
+I saw nothing at all.	I saw something.
+Not often do we see her lose her cool like that.	We frequently see her lose her cool like that.
+Seldom do we see her lose her cool like that.	We often see her lose her cool like that.
+Not one person supported the proposal.	Some people supported the proposal.
+Not one person supported the proposal.	Everyone supported the proposal.
+No one supported the proposal.	Everyone supported the proposal.
+Nobody supported the proposal.	Everyone supported the proposal.
+Not one person supported the proposal.	Two people supported the proposal.
+Not one person supported the proposal.	Twenty people supported the proposal.
+Not one person supported the proposal.	One person supported the proposal.
+They had found not one mistake.	They had found more than one mistake.
+They had found not one mistake.	They had found less than one mistake.
+They had found not one mistake.	They had found two mistakes.
+They had not found any mistakes.	They had found two mistakes.
+His speech had not caused a little confusion.	His speech had caused a little confusion.
+A mistake would not be costly and a little embarrassing.	A mistake would be costly and a little embarrassing.
+A mistake would neither be costly nor mildly embarrassing.	A mistake would be both costly and mildly embarrassing.
+A mistake would be costly and not very embarrassing.	A mistake would be costly and a little embarrassing.
+Not even Ed approved of the plan.	Even Ed approved of the plan.
+Not only Ed approved of the plan. 	Only Ed approved of the plan.
+Not even Ed approved of the plan.	Just Ed approved of the plan.
+Not even then did he lose patience.	Only then did he lose patience.
+The acting was appalling and the movie was not far too long.	The acting was appalling and the movie was far too long.
+The acting was not appalling and the movie was not far too long.	The acting was appalling and the movie was far too long.
+The acting was not appalling and the movie was far too long.	The acting was appalling and the movie was far too long.
+Neither was the acting appalling, nor was the movie too long.	The acting was appalling and the movie was far too long.
+We had a not very amicable discussion.	We had a very amicable discussion.
+It somehow sounded not quite right.	It somehow sounded quite right.
+I found his story not wholly convincing.	I found his story wholly convincing.
+He spoke not very confidently.	He spoke very confidently.
+He never spoke confidently.	He spoke very confidently.
+Not many of them had been damaged.	Many of them had been damaged.
+None of them had been damaged.	Some of them had not been damaged.
+None of them had been damaged.	A few of them had been damaged.
+Not all of them had been damaged.	All of them had been damaged.
+It was a not undistinguished private university with a large endowment.	It was an undistinguished private university with a large endowment.
+She had a not inconsiderable income.	She had an inconsiderable income.
+They had fixed the walls, and purchased some not inelegant furniture.	They had fixed the walls, and purchased some inelegant furniture.
+They had not fixed the walls, and purchased some not inelegant furniture.	They had fixed the walls, and purchased some inelegant furniture.
+Not unexpectedly, Charles was late for the meeting.	Unexpectedly, Charles was not late for the meeting.
+Not unexpectedly, Charles was late for the meeting.	Unexpectedly, Charles was late for the meeting.
+Unexpectedly, Charles was late for the meeting.	Expectedly, Charles was not late for the meeting.
+Not unreasonably, he asked for payment in advance.	Unreasonably, he did not ask for payment in advance.
+Not unreasonably, he asked for payment in advance.	Unreasonably, he asked for payment in advance.
+Unreasonably, he did not ask for payment in advance.	Unreasonably, he asked for payment in advance.
+Unreasonably, he asked for payment in advance.	Reasonably, he did not ask for payment in advance.
+Unreasonably, he asked for payment in advance.	Reasonably, he asked for payment in advance.
+Not surprisingly, they didn't want any part of it.	Surprisingly, they didn't want any part of it.
+Not surprisingly, they didn't want any part of it.	Surprisingly, they wanted some part of it.
+Surprisingly, none of them wanted any part of it.	Surprisingly, they wanted some part of it.
+She did not contemplate giving up at any stages of the proceedings.	She contemplated giving up at some stages of the proceedings.
+She did not feel utterly betrayed.	she felt utterly betrayed.
+She had not felt utterly betrayed before.	She had felt utterly betrayed before.
+She had never felt utterly betrayed before.	She had felt utterly betrayed before.
+She had felt no betrayal before.	She had felt utterly betrayed before
+Not an accomplished dancer, he moved rather clumsily.	Though not an accomplished dancer, he did not move clumsily.
+Not an accomplished dancer, he moved rather clumsily.	Being an accomplished dancer, he did not move clumsily.
+Not an accomplished dancer, he moved rather clumsily.	Though being an accomplished dancer, he moved rather clumsily.
+Not under any illusions about the matter, he continued to be cautious.	Under some illusions about the matter, he did not continue to be cautious.
+Not under any illusions about the matter, he continued to be cautious.	Under some illusions about the matter, he continued to be cautious.
+Not under any illusions about the matter, he continued to be cautious.	Though not under any illusions about the matter, he did not continue to be cautious.
+Though not under any illusions about the matter, there was no caution in his actions.	Though not under any illusions about the matter, he continued to be cautious in his actions.
+We do not need someone not afraid of taking risks.	We need someone afraid of taking risks.
+We need someone not afraid of taking risks.	We need someone afraid of taking risks.
+We need someone not afraid of taking risks.	We need someone afraid of taking risks.
+We need someone who is not fearful of taking risks.	We need someone afraid of taking risks.
+We do not need someone who is fearless in taking risks.	We need someone afraid of taking risks.
+There are spare blankets in here, not that you'll have any need of them.	There are spare blankets in here, you'll need them.
+There are no spare blankets in here, not that you'll have any need of them.	There are spare blankets in here, you'll need them.
+There are no spare blankets in here, you'll need them.	There are spare blankets in here, you'll need them.
+There are spare blankets in here, but you won't need them.	There are spare blankets in here, you'll need them.
+They are now leaving not on Friday, but on Saturday.	They are now leaving on Friday, rather than on Saturday.
+They are now not leaving on Friday, but on Saturday.	They are now leaving on Friday, rather than on Saturday.
+They are now leaving on Friday, not on Saturday.	They are now leaving not on Friday, but on Saturday.
+They are now leaving neither on Friday nor Saturday.	They are now leaving not on Friday, but on Saturday.
+They've invited you and your brother, but not me.	They've invited you and your brother, and me.
+They've invited not you and your brother, but me.	They've invited you and your brother, and me.
+They've invited not you and your brother, nor me.	They've invited you and your brother, and me.
+She rarely goes out these days.	She never goes out these days.
+She rarely goes out these days.	She goes out regularly these days.
+She doesn't go out these days.	She goes out these days.
+This phone hardly lags.	This phone lags.
+This phone never lags.	This phone lags.
+This phone does not lag.	This phone lags.
+Nothing about this phone lags.	This phone lags.
+None of the liquid spilled.	Lots of the liquid spilled.
+Little of the liquid spilled.	Lots of the liquid spilled.
+Not much of the liquid spilled.	Lots of the liquid spilled.
+Lots of the liquid did not spill.	Lots of the liquid spilled.
+One seldom sees such birds.	One does see such birds.
+One doesn't see such birds.	One does see such birds.
+One never sees such birds.	People often see such birds.
+One never sees such birds.	One does see such birds.
+None of them supported her.	Few of them supported her.
+None of them supported her.	One of them supported her.
+None of them supported her.	Two of them supported her.
+None of them supported her.	Twenty of them supported her.
+None of them supported her.	some of them supported her.
+

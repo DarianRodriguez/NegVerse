@@ -1,0 +1,13 @@
+numpy
+jupyter
+jupyterlab
+pandas
+matplotlib
+scikit-learn
+seaborn
+datasets
+torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+transformers
+tqdm
+peft
+

@@ -6,6 +6,7 @@ from enum import Enum
 import numpy as np
 from torch.utils.data import DataLoader, TensorDataset, RandomSampler
 from datasets import Dataset
+from difflib import SequenceMatcher
 
 
 class TargetType(Enum):
@@ -65,11 +66,19 @@ class TextGenerationSetup:
             prompts.append(new_prompt.rstrip('.').strip())
         return prompts
 
-    def get_answer(self,answer):
+    def get_answer_2(self,answer):
         prompts = []
         prompts.append(f"{TextGenerationSetup.SEP_TOK} {answer.strip()} {TextGenerationSetup.ANSWER_TOK}")
         #prompts.append(answer.strip())
         return prompts
+    
+    def get_answer(self,answers):
+        sentence = ""
+        initial = TextGenerationSetup.SEP_TOK
+        for answer in answers:
+            sentence += f"{initial} {answer.strip()} {TextGenerationSetup.ANSWER_TOK}"
+            initial = ""
+        return sentence
     
     
     def tokenize_function(self, examples):
@@ -95,6 +104,7 @@ def process_dataframe(affixal_path, text_format ):
         """
 
         train_data = []
+        sentence_mask = True
 
         # Load the DataFrame from the pickle file
         filtered_df = pd.read_pickle(affixal_path)
@@ -104,15 +114,22 @@ def process_dataframe(affixal_path, text_format ):
             text_pos = row['text_substituted']
             cue = row['cues'].split()[0]  # Assuming 'cues' column contains space-separated cues
             
-            # Replace the cue in the text with '[BLANK]'
-            text_with_blank = text.replace(cue, '[BLANK]')
-            
-            # Generate the prompt and answer
-            prompt_examples = text_format.get_prompts(text_pos, [text_with_blank]) # format the input prompts
-            answer_formatted = text_format.get_answer(cue) # format the answer
+            if sentence_mask :
+                # Replace the cue in the text with '[BLANK]'
+                text_with_blank = text.replace(cue, '[BLANK]')
+
+                # Generate the prompt and answer
+                prompt_examples = text_format.get_prompts(text_pos, [text_with_blank]) # format the input prompts
+                answer_formatted = text_format.get_answer([cue]) # format the answer
+
+            else:
+                text_with_blank = '[BLANK]'
+                prompt_examples = text_format.get_prompts(text_pos, [text_with_blank]) # format the input prompts
+                answer_formatted = text_format.get_answer([text]) # format the answer
+
             
             # Combine the prompt and answer in the required format
-            combined_sentence = f"{prompt_examples[0]} {answer_formatted[0]}"
+            combined_sentence = f"{prompt_examples[0]} {answer_formatted}"
             train_data.append(combined_sentence)
 
         # Convert to a suitable format for Hugging Face Dataset
@@ -120,6 +137,113 @@ def process_dataframe(affixal_path, text_format ):
         train_dataset = Dataset.from_pandas(train_dataset)
         
         return train_dataset
+
+def process_dataframe_general(filtered_df,text_format):
+
+        """
+        Processes a DataFrame containing text data to generate a dataset suitable for text generation tasks.
+        this dataset have the negation, original snetence, the masked information
+        """
+
+        train_data = []
+        sentence_mask = True
+
+        for _, row in filtered_df.iterrows():
+            negated = row['negated']
+            original = row['original']
+            
+            
+            if sentence_mask :
+                # Replace the cue in the text with '[BLANK]'
+                text_with_blank = row['mask']
+                answer = row['masked_info']
+            else:
+                text_with_blank = '[BLANK]'
+                answer = [negated]
+            
+            # Generate the prompt and answer
+            prompt_examples = text_format.get_prompts(original, [text_with_blank]) # format the input prompts
+            answer_formatted = text_format.get_answer(answer) # format the answer
+            
+            # Combine the prompt and answer in the required format
+            combined_sentence = f"{prompt_examples[0]} {answer_formatted}"
+            train_data.append(combined_sentence)
+
+        # Convert to a suitable format for Hugging Face Dataset
+        train_dataset= pd.DataFrame(train_data, columns=["input_text"]) #columns=["input_text", "target_text"]
+        train_dataset = Dataset.from_pandas(train_dataset)
+        
+        return train_dataset
+
+def mask_differences(negated, original):
+
+    # Tokenize sentences
+    negated_tokens = np.array(negated.split())
+    original_tokens = np.array(original.split())
+    
+    # Use SequenceMatcher to find matching blocks
+    matcher = SequenceMatcher(None, negated_tokens, original_tokens)
+    
+    # Initialize mask tokens and list to capture masked segments
+    mask_tokens = []
+    masked_info = []
+    prev_end = 0
+    
+    for tag, i1, i2, j1, j2 in matcher.get_opcodes():
+        if tag == 'replace' or tag == 'delete':
+            if prev_end < i1:
+                # Add [BLANK] for non-matching segments
+                mask_tokens.extend(['[BLANK]'] * (i1 - prev_end))
+                # Capture the masked segment
+                masked_info.append(' '.join(negated_tokens[prev_end:i1]))
+            else:
+                # Consolidate contiguous [BLANK] tokens
+                if mask_tokens and mask_tokens[-1] == '[BLANK]':
+                    mask_tokens = mask_tokens[:-1]
+                mask_tokens.append('[BLANK]')
+                masked_info.append(' '.join(negated_tokens[i1:i2]))
+        elif tag == 'insert':
+            # Skip inserted parts as they are not in negated_tokens
+            pass
+        else:  # 'equal'
+            # Add matching tokens to the mask
+            mask_tokens.extend(negated_tokens[i1:i2])
+        
+        prev_end = i2
+    
+    # Handle trailing [BLANK] segments
+    if prev_end < len(negated_tokens):
+        mask_tokens.extend(['[BLANK]'] * (len(negated_tokens) - prev_end))
+        masked_info.append(' '.join(negated_tokens[prev_end:]))
+    
+    # Consolidate contiguous [BLANK] segments into a single [BLANK]
+    mask_array = []
+    in_blank_segment = False
+    for token in mask_tokens:
+        if token == '[BLANK]':
+            if not in_blank_segment:
+                mask_array.append('[BLANK]')
+                in_blank_segment = True
+        else:
+            mask_array.append(token)
+            in_blank_segment = False
+    
+    # Convert mask tokens to a single string
+    masked_sentence = ' '.join(mask_array)
+    
+    return masked_sentence, masked_info
+
+def process_data(data_path):
+
+    df_dataset = pd.read_csv(data_path, delimiter='\t')
+
+    # Apply function to the DataFrame
+    df_dataset[['mask', 'masked_info']] = df_dataset.apply(lambda row: pd.Series(mask_differences(row['negated'], row['original'])), axis=1)
+
+    # Convert 'masked_info' column to lists of masked segments
+    df_dataset['masked_info'] = df_dataset['masked_info'].apply(lambda x: [seg for seg in x if seg.strip()])
+
+    return df_dataset
 
 
 class Trainer_preprocess:

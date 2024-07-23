@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import torch.nn.functional as F
 import os
+import config
 
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from data_preprocess import TargetType, Special_tokens
@@ -105,8 +106,8 @@ def train_engine(train_loader,train_num_epochs,model, device,num_virtual_tokens)
   model.train()
   train_history = []
 
-  train_learning_rate = 5e-5
-  train_adam_epsilon = 1e-8
+  train_learning_rate = config.TRAIN_LEARNING_RATE # 5e-5
+  train_adam_epsilon = config.TRAIN_ADAM_EPSILON #1e-8
 
   optimizer = AdamW(
     model.parameters(),
