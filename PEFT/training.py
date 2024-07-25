@@ -10,7 +10,7 @@ import torch
 from data_preprocess import TextGenerationSetup, process_dataframe, Trainer_preprocess, process_dataframe_general, process_data
 from training_helper import setup_model,create_model_directories, create_peft_model, train_engine
 from peft import PromptTuningConfig, TaskType, PromptTuningInit, get_peft_model,PeftModel
-from inference import get_outputs
+from inference import get_outputs, NegationModel
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from datasets import load_dataset, concatenate_datasets
 
@@ -31,12 +31,22 @@ text_format = TextGenerationSetup(config.MODEL_PATH)
 # Load affixal negations dataset in the right format for training
 print("\n Loading data")
 affixal_df = '../data/affixal/filtered_df.pkl' # Specify the path to the pickle file
-train_dataset_affixal = process_dataframe(affixal_df,text_format)
+new_affixal_path = '../data/affixal/generated_sentences.txt' 
+new_affixal_df = process_data(new_affixal_path) # Create dataset with MASK
+
+train_dataset_affixal_1 = process_dataframe(affixal_df,text_format,True)
+train_dataset_affixal_2 = process_dataframe(affixal_df,text_format, False) # entire sentence
+train_dataset_affixal_3 = process_dataframe_general(new_affixal_df ,text_format,True)
+train_dataset_affixal_4 = process_dataframe_general(new_affixal_df ,text_format,False)
+train_dataset_affixal = concatenate_datasets([train_dataset_affixal_1, train_dataset_affixal_2,train_dataset_affixal_3,train_dataset_affixal_4])
 
 # Load non verbal negations
 data_path = '../data/non_verbal/sentence_negated_modified.txt' 
-nonverbal_df = process_data(data_path)
-train_dataset_nonverbal = process_dataframe_general(nonverbal_df,text_format)
+nonverbal_df = process_data(data_path)  # Create dataset with MASK
+
+train_dataset_nonverbal_1 = process_dataframe_general(nonverbal_df,text_format,True)
+train_dataset_nonverbal_2 = process_dataframe_general(nonverbal_df,text_format,False)
+train_dataset_nonverbal = concatenate_datasets([train_dataset_nonverbal_1, train_dataset_nonverbal_2])
 
 # Unify datasets
 unified_dataset = concatenate_datasets([train_dataset_affixal, train_dataset_nonverbal])
@@ -65,31 +75,18 @@ model_peft.to(device)
 
 trained_model = train_engine(train_dataloader,config.NUM_EPOCHS, model_peft, device,config.NUM_VIRTUAL_TOKENS)
 
-#count_trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
-
-# Print the number of trainable parameters
-#print(f'Number of trainable parameters: {count_trainable_params}')
-
-## Inference
-#model.eval()f
-#input_prompt = tokenizer("His behavior is always responsible. <|perturb|> [negation] His behavior is [BLANK]", return_tensors="pt").to(device)
-#input_prompt = tokenizer("too much of it feels focused and underdeveloped . <|perturb|> [negation] too much of it feels [BLANK] and underdeveloped", return_tensors="pt").to(device)
-#outputs_prompt = get_outputs(trained_model, input_prompt, num_beams = 5)
-#print(tokenizer.batch_decode(outputs_prompt, skip_special_tokens=True))
-
-
 # Save the trained model
 trained_model.save_pretrained(output_directory)
 
-
 # Inference
-input_prompt = tokenizer("His behavior is always responsible. <|perturb|> [negation] [BLANK]", return_tensors="pt") #.to(device)
+input_prompt = "His behavior is always responsible. <|perturb|> [negation] [BLANK]"
 
-loaded_model = PeftModel.from_pretrained(model,output_directory,is_trainable=False)
-outputs_prompt1 = get_outputs(loaded_model , input_prompt, num_beams = 5)
-outputs_prompt2 = get_outputs(model , input_prompt, num_beams = 5)
-print(tokenizer.batch_decode(outputs_prompt1, skip_special_tokens=True))
-print("ORIGINAL")
-print(tokenizer.batch_decode(outputs_prompt2, skip_special_tokens=True))
+negation_model = NegationModel(output_directory)
+outputs = negation_model.infer(input_prompt, num_beams=5, num_return_sequences=3)
+
+print("Trained Model Outputs:")
+print(outputs["trained_model_outputs"])
+print("\nOriginal Model Outputs:")
+print(outputs["original_model_outputs"])
 
 

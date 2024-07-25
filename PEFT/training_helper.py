@@ -64,7 +64,7 @@ def train_fn(train_dataloader,model,device,optimizer,num_virtual_tokens):
   for batch in train_dataloader:
 
     inputs, tts = tuple(t.to(device) for t in batch)
-    labels_context = tts_to_labels(inputs, tts, [TargetType.CONTEXT])
+    labels_context = tts_to_labels(inputs, tts, [TargetType.CONTEXT,TargetType.CONTEXT_INFILL_SEP])
     labels_infill = tts_to_labels(inputs, tts, [TargetType.INFILL, TargetType.INFILL_SPECIAL])
 
     outputs = model(inputs)

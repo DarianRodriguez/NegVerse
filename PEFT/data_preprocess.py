@@ -60,23 +60,23 @@ class TextGenerationSetup:
         prompts = []
         for bt in blanked_sents:
             tag = 'negation'
-            sep_tok = TextGenerationSetup.SEP_TOK if bt and is_complete_blank else ""
-            new_prompt = f"{doc.strip()} {TextGenerationSetup.PERETURB_TOK} [{tag}] {bt.strip()}".strip()
+            sep_tok = Special_tokens.SEP_TOK if bt and is_complete_blank else ""
+            new_prompt = f"{doc.strip()} {Special_tokens.PERETURB_TOK} [{tag}] {bt.strip()}".strip()
             #prompts.append(new_prompt)
             prompts.append(new_prompt.rstrip('.').strip())
         return prompts
 
     def get_answer_2(self,answer):
         prompts = []
-        prompts.append(f"{TextGenerationSetup.SEP_TOK} {answer.strip()} {TextGenerationSetup.ANSWER_TOK}")
+        prompts.append(f"{Special_tokens.SEP_TOK} {answer.strip()} {Special_tokens.ANSWER_TOK}")
         #prompts.append(answer.strip())
         return prompts
     
     def get_answer(self,answers):
         sentence = ""
-        initial = TextGenerationSetup.SEP_TOK
+        initial = Special_tokens.SEP_TOK
         for answer in answers:
-            sentence += f"{initial} {answer.strip()} {TextGenerationSetup.ANSWER_TOK}"
+            sentence += f"{initial} {answer.strip()} {Special_tokens.ANSWER_TOK}"
             initial = ""
         return sentence
     
@@ -86,7 +86,7 @@ class TextGenerationSetup:
         input_encodings = self.tokenizer(examples['input_text'], truncation=True, padding="max_length", max_length=100)
         return input_encodings
     
-def process_dataframe(affixal_path, text_format ):
+def process_dataframe(affixal_path, text_format,sentence_mask):
 
         """
         Processes a DataFrame containing text data to generate a dataset suitable for text generation tasks.
@@ -104,7 +104,7 @@ def process_dataframe(affixal_path, text_format ):
         """
 
         train_data = []
-        sentence_mask = True
+        #sentence_mask = True
 
         # Load the DataFrame from the pickle file
         filtered_df = pd.read_pickle(affixal_path)
@@ -138,7 +138,7 @@ def process_dataframe(affixal_path, text_format ):
         
         return train_dataset
 
-def process_dataframe_general(filtered_df,text_format):
+def process_dataframe_general(filtered_df,text_format,sentence_mask):
 
         """
         Processes a DataFrame containing text data to generate a dataset suitable for text generation tasks.
@@ -146,7 +146,7 @@ def process_dataframe_general(filtered_df,text_format):
         """
 
         train_data = []
-        sentence_mask = True
+        #sentence_mask = True
 
         for _, row in filtered_df.iterrows():
             negated = row['negated']
