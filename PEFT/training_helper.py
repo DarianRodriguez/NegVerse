@@ -4,12 +4,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 import torch.nn.functional as F
 import os
-import config
+from .config import *
 
 from transformers import AutoTokenizer, AutoModelForCausalLM
-from data_preprocess import TargetType, Special_tokens
+from .data_preprocess import TargetType, Special_tokens
 from torch.optim import AdamW
 from peft import PromptTuningConfig, TaskType, PromptTuningInit, get_peft_model,PeftModel
+from sklearn.model_selection import train_test_split
 
 def setup_model(model_path):
   device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -24,6 +25,7 @@ def setup_model(model_path):
 
   return device,tokenizer, model
 
+
 def tts_to_labels(inputs, tts, label_tts):
   # Extract only the relevant token ids
   selector = torch.zeros_like(inputs, dtype=torch.bool)
@@ -35,24 +37,33 @@ def tts_to_labels(inputs, tts, label_tts):
       torch.full_like(inputs, -1))
 
 
-def plot_training_loss(train_history):
+
+def plot_training_loss(train_history, valid_history):
     """
-    Plot the training loss over epochs.
-    
+    Plot the training and validation loss over epochs.
+
     Args:
         train_history (list): List of training loss values for each epoch.
-        train_num_epochs (int): Number of epochs.
+        valid_history (list): List of validation loss values for each epoch.
     """
-
     train_num_epochs = len(train_history)
-    plt.figure(figsize=(10, 6))
+    
+    # Ensure the validation history has the same length as training history
+    if len(valid_history) != train_num_epochs:
+        raise ValueError("Training and validation history must have the same length.")
+    
     epochs = np.arange(train_num_epochs)  # Array of epoch indices
-    plt.plot(epochs, train_history, marker='o', linestyle='-', color='b')
-    plt.title('Training Loss per Epoch')
+    
+    plt.figure(figsize=(12, 8))
+    plt.plot(epochs, train_history, marker='o', linestyle='-', color='b', label='Training Loss')
+    plt.plot(epochs, valid_history, marker='o', linestyle='-', color='r', label='Validation Loss')
+    
+    plt.title('Training and Validation Loss per Epoch')
     plt.xlabel('Epoch')
     plt.ylabel('Loss')
     plt.xticks(ticks=epochs)  # Set x-axis ticks to integer values
     plt.grid(True)
+    plt.legend()
     plt.show()
 
 
@@ -60,6 +71,7 @@ def train_fn(train_dataloader,model,device,optimizer,num_virtual_tokens):
 
   total_loss = 0
   train_context = True
+  model.train()
 
   for batch in train_dataloader:
 
@@ -101,13 +113,50 @@ def train_fn(train_dataloader,model,device,optimizer,num_virtual_tokens):
   return avg_train_loss
 
 
-def train_engine(train_loader,train_num_epochs,model, device,num_virtual_tokens):
+def eval_fn(valid_dataloader, model, device, num_virtual_tokens):
+  total_loss = 0
+  train_context = True
+  model.eval()
 
-  model.train()
+  with torch.no_grad():
+     for batch in valid_dataloader:
+        inputs, tts = tuple(t.to(device) for t in batch)
+        labels_context = tts_to_labels(inputs, tts, [TargetType.CONTEXT,TargetType.CONTEXT_INFILL_SEP])
+        labels_infill = tts_to_labels(inputs, tts, [TargetType.INFILL, TargetType.INFILL_SPECIAL])
+
+        outputs = model(inputs)
+        logits =  outputs.logits
+
+        logits_relevant = logits[:, num_virtual_tokens:-1].contiguous().view(-1, logits.shape[-1])
+
+        loss_context = F.cross_entropy(
+          logits_relevant,
+          labels_context[:, 1:].contiguous().view(-1),
+          ignore_index=-1)
+    
+        loss_infill = F.cross_entropy(
+          logits_relevant,
+          labels_infill[:, 1:].contiguous().view(-1),
+          ignore_index=-1)
+        
+        loss = loss_infill
+
+        if train_context:
+           loss += loss_context
+
+        total_loss += loss.item()
+
+  avg_valid_loss = total_loss / len(valid_dataloader)
+  return avg_valid_loss
+
+
+def train_engine(train_loader,valid_loader,train_num_epochs,model, device,num_virtual_tokens):
+
   train_history = []
+  valid_history = []
 
-  train_learning_rate = config.TRAIN_LEARNING_RATE # 5e-5
-  train_adam_epsilon = config.TRAIN_ADAM_EPSILON #1e-8
+  train_learning_rate = TRAIN_LEARNING_RATE # 5e-5
+  train_adam_epsilon = TRAIN_ADAM_EPSILON #1e-8
 
   optimizer = AdamW(
     model.parameters(),
@@ -115,11 +164,13 @@ def train_engine(train_loader,train_num_epochs,model, device,num_virtual_tokens)
 
   for i in range(train_num_epochs):
     train_loss = train_fn(train_loader, model, device,optimizer,num_virtual_tokens)
+    valid_loss = eval_fn(valid_loader, model, device, num_virtual_tokens)
     train_history.append(train_loss)
-    print(f"Epoch {i} , Train loss: {train_loss:.4f}")
+    valid_history.append(valid_loss)
+    print(f"Epoch {i} , Train loss: {train_loss:.4f}, Valid loss: {valid_loss:.4f}")
 
   # Call the plotting function
-  plot_training_loss(train_history)
+  plot_training_loss(train_history,valid_history)
 
   return model
 

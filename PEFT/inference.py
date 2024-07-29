@@ -1,6 +1,7 @@
 
-from training_helper import setup_model
+from .training_helper import setup_model
 from peft import PeftModel
+from transformers import AutoTokenizer, AutoModelForCausalLM
 
 def get_outputs(model,inputs,do_sample=True,num_beams=None,num_return_sequences = 3):
     """
@@ -26,6 +27,7 @@ def get_outputs(model,inputs,do_sample=True,num_beams=None,num_return_sequences 
         num_beams=1 if num_beams is None else num_beams,
         do_sample=num_beams is None and do_sample,
         num_return_sequences=num_return_sequences,
+        pad_token_id= 50256 #tokenizer.eos_token_id
     )
     return outputs
 
@@ -40,7 +42,7 @@ class NegationModel:
             model_path (str): The path to the original model.
             output_directory (str): The path to the directory where the model is saved.
         """
-        print(model_path)
+        
         # Initialize tokenizer and model using setup_model function
         self.device, self.tokenizer, self.model = setup_model(model_path)
 
@@ -61,7 +63,10 @@ class NegationModel:
             dict: Decoded outputs from the loaded model and the original model.
         """
         # Tokenize the input prompt
-        input_prompt = self.tokenizer(input_prompt_text, return_tensors="pt")
+        #input_prompt = self.tokenizer(input_prompt_text, return_tensors="pt")
+        input_prompt = self.tokenizer(input_prompt_text, return_tensors='pt', padding=True, truncation=True)
+
+        #input_prompt =  self.tokenizer(input_prompt_text, return_tensors="pt", padding="max_length", max_length=100) 
         
         # Generate outputs using the loaded model
         outputs_loaded_model = get_outputs(self.loaded_model, input_prompt, num_beams=num_beams, num_return_sequences=num_return_sequences)

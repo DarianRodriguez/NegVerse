@@ -7,6 +7,10 @@ import numpy as np
 from torch.utils.data import DataLoader, TensorDataset, RandomSampler
 from datasets import Dataset
 from difflib import SequenceMatcher
+from sklearn.utils import shuffle
+from .config import SEED, TEST_SIZE
+from datasets import load_dataset, concatenate_datasets,Dataset
+from sklearn.model_selection import train_test_split
 
 
 class TargetType(Enum):
@@ -23,6 +27,7 @@ class Special_tokens():
     SEP_TOK = "[SEP]"
     ANSWER_TOK = "[ANSWER]"
     NEG_TOK = "[negation]"
+    EMPTY_TOK = "[EMPTY]"
 
     @classmethod
     def initialize_token_ids(cls, tokenizer):
@@ -339,6 +344,62 @@ class Trainer_preprocess:
         train_sampler = RandomSampler(train_data)
 
         # Create DataLoader
-        train_dataloader = DataLoader(train_data, sampler=train_sampler, batch_size=self.batch_size, drop_last=True)
+        train_dataloader = DataLoader(train_data, sampler=train_sampler, batch_size=self.batch_size, drop_last=False)
 
         return train_dataloader, train_data, train_dataset
+    
+
+def load_data(text_format):
+
+    # Load affixal negations dataset in the right format for training
+    print("\n Loading data")
+    affixal_df = 'data/affixal/filtered_df.pkl' # Specify the path to the pickle file
+    new_affixal_path = 'data/affixal/generated_sentences.txt' 
+    new_affixal_df = process_data(new_affixal_path) # Create dataset with MASK
+
+    # Load non verbal negations
+    data_path = 'data/non_verbal/sentence_negated_modified.txt' 
+    nonverbal_df = process_data(data_path)  # Create dataset with MASK
+
+    train_dataset_affixal_1 = process_dataframe(affixal_df,text_format,True)
+    train_dataset_affixal_2 = process_dataframe_general(new_affixal_df ,text_format,True)
+    train_dataset_nonverbal_1 = process_dataframe_general(nonverbal_df,text_format,True)
+
+    train_dataset_1= concatenate_datasets([train_dataset_affixal_1, train_dataset_affixal_2,train_dataset_nonverbal_1]) #partial
+
+    train_dataset_affixal_3 = process_dataframe(affixal_df,text_format, False) # entire sentence
+    train_dataset_affixal_4 = process_dataframe_general(new_affixal_df ,text_format,False)
+    train_dataset_nonverbal_2 = process_dataframe_general(nonverbal_df,text_format,False)
+
+    train_dataset_2= concatenate_datasets([train_dataset_affixal_3, train_dataset_affixal_4,train_dataset_nonverbal_2]) #complete
+
+    train_dataset = [train_dataset_1, train_dataset_2] 
+
+    return train_dataset
+
+
+
+def split_dataset(train_dataset:list):
+
+        # Initialize an empty dataset
+    new_train = Dataset.from_dict({"input_text": []})
+    # Initialize an empty dataset
+    new_valid = Dataset.from_dict({"input_text": []})
+
+    indices = list(range(len(train_dataset[0])))
+    train_indices, val_indices = train_test_split(indices, test_size=TEST_SIZE, random_state=SEED)
+
+    for data in train_dataset:
+        # Create training and validation datasets
+        train_data = data.select(train_indices)
+        val_data = data.select(val_indices)
+
+        new_train = concatenate_datasets([new_train, train_data])
+        new_valid = concatenate_datasets([new_valid, val_data])
+
+    return new_train,new_valid
+
+
+
+
+
