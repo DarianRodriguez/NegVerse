@@ -1,10 +1,10 @@
-from PEFT import config
-from PEFT.inference import NegationModel
-from negator_wrapper import Negator
+from ..PEFT import config
+from ..PEFT.inference import NegationModel
+from ..negator_wrapper import Negator
 from typing import List
 from torch.utils.data import DataLoader
-from generation_processing import remove_blanks
-from PEFT.data_preprocess import Special_tokens
+from ..generation_processing import remove_blanks
+from ..PEFT.data_preprocess import Special_tokens
 from .eval_metrics import compute_closeness,compute_self_bleu
 
 import numpy as np
@@ -12,7 +12,7 @@ import numpy as np
 def evaluate_model(test_data:list):
 
     print("\n Evaluating the model")
-    directory = "PEFT/peft_outputs"
+    directory = "negator/PEFT/peft_outputs"
     negation_model = NegationModel(directory)
     negator_object = Negator()
 
@@ -65,16 +65,12 @@ def evaluate_model(test_data:list):
     avg_bleu_orig = np.mean(org_bleu)
     avg_bleu_peft = np.mean(org_lev_dist)
 
-    print(original)
-    print(generations_peft[-1])
-    print(replaced_original)
-    print(replaced_peft)
-
     # Format the averages for printing
     print("Closeness")
     print(f"Average Syntactic Tree Distance (PEFT): {avg_tree_peft:.3f}")
     print(f"Average Levenshtein Distance (PEFT): {avg_lev_peft:.3f}")
     print(f"Average Syntactic Tree Distance (Original): {avg_tree_orig:.3f}")
+    print(f"Average Levenshtein Distance (Original): {avg_lev_orig:.3f}")
 
     print("\nDiversity")
     print(f"Average Bleu Score (Original): {avg_bleu_orig:.3f}")

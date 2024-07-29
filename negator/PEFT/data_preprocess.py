@@ -353,12 +353,12 @@ def load_data(text_format):
 
     # Load affixal negations dataset in the right format for training
     print("\n Loading data")
-    affixal_df = 'data/affixal/filtered_df.pkl' # Specify the path to the pickle file
-    new_affixal_path = 'data/affixal/generated_sentences.txt' 
+    affixal_df = 'negator/data/affixal/filtered_df.pkl' # Specify the path to the pickle file
+    new_affixal_path = 'negator/data/affixal/generated_sentences.txt' 
     new_affixal_df = process_data(new_affixal_path) # Create dataset with MASK
 
     # Load non verbal negations
-    data_path = 'data/non_verbal/sentence_negated_modified.txt' 
+    data_path = 'negator/data/non_verbal/sentence_negated_modified.txt' 
     nonverbal_df = process_data(data_path)  # Create dataset with MASK
 
     train_dataset_affixal_1 = process_dataframe(affixal_df,text_format,True)

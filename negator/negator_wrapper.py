@@ -2,12 +2,23 @@ import torch
 import numpy as np
 from spacy.tokens import Doc
 from typing import List, Dict, Tuple
-from Evaluation.semantic_filter import load_distance_scorer, compute_sent_cosine_distance
-from PEFT.training_helper import setup_model
+from .Evaluation.semantic_filter import load_distance_scorer, compute_sent_cosine_distance
+from .generation_processing import get_outputs
+from .PEFT.training_helper import setup_model
 from peft import PeftModel
+from .PEFT.data_preprocess import Special_tokens
+from .generation_processing import remove_blanks
+from .PEFT.inference import NegationModel
+import warnings
 
-from helpers import create_processor
+from .helpers import create_processor
 
+from .generation_processing import \
+    get_random_idxes, \
+    get_prompts,\
+    create_blanked_sents
+
+warnings.filterwarnings("ignore")
 
 import logging
 logging.basicConfig(level=logging.INFO)
@@ -16,7 +27,7 @@ logger = logging.getLogger(__name__)  # pylint: disable=invalid-name
 
 
 class Negator(object):
-    def __init__(self, model_path: str="uw-hai/polyjuice", is_cuda: bool=True, directory: str = "PEFT/peft_outputs") -> None:
+    def __init__(self, model_path: str="uw-hai/polyjuice", is_cuda: bool=True, directory: str = "negator/PEFT/peft_outputs") -> None:
         """The wrapper.
 
         Args:
@@ -71,13 +82,71 @@ class Negator(object):
     ##############################################
     # validation
     ##############################################
+
+    def get_random_blanked_sentences(self, 
+        sentence: Tuple[str, Doc], 
+        pre_selected_idxes: List[int]=None,
+        deps: List[str]=None,
+        is_token_only: bool=False,
+        max_blank_sent_count: int=2,
+        max_blank_block: int=1) -> List[str]:
+        """Generate some random blanks for a given sentence
+
+        Args:
+            sentence (Tuple[str, Doc]): The sentence to be blanked,
+                either in str or SpaCy doc.
+            pre_selected_idxes (List[int], optional): 
+                If set, only allow blanking a preset range of token indexes. 
+                Defaults to None.
+            deps (List[str], optional): 
+                If set, only select from a subset of dep tags. Defaults to None.
+            is_token_only (bool, optional):
+                blank sub-spans or just single tokens. Defaults to False.
+            max_blank_sent_count (int, optional): 
+                maximum number of different blanked sentences. Defaults to 3.
+            max_blank_block (int, optional): 
+                maximum number of blanks per returned sentence. Defaults to 1.
+
+        Returns:
+            List[str]: blanked sentences
+        """
+        if type(sentence) == str:
+            sentence = self._process(sentence)
+            
+        indexes = get_random_idxes(
+            sentence, 
+            pre_selected_idxes=pre_selected_idxes,
+            deps=deps,
+            is_token_only=is_token_only,
+            max_count=max_blank_sent_count,
+            max_blank_block=max_blank_block
+        )
+
+        blanked_sents = create_blanked_sents(sentence, indexes)
+        return blanked_sents
+    
+    def generate_answers(self,prompts,num_beams=3, num_return_sequences=3):
+
+        input_prompt = self.tokenizer(prompts, return_tensors='pt', padding=True, truncation=True)
+        outputs_peft_model = get_outputs(self.loaded_model, input_prompt, num_beams=num_beams, num_return_sequences=num_return_sequences)
+        preds_list = self.tokenizer.batch_decode(outputs_peft_model, skip_special_tokens=True)
+
+        if len(prompts) == 1:
+            preds_list = [preds_list]
+
+        preds_list_cleaned = []
+
+        for sequence in preds_list:
+            normalized, _ = remove_blanks(sequence)
+            preds_list_cleaned.append(normalized)
+
+        return preds_list_cleaned
     
 
     def perturb(self, 
         orig_sent: Tuple[str, Doc], 
         blanked_sent: Tuple[str, List[str]]=None,
         is_complete_blank: bool=False, 
-        ctrl_code: Tuple[str, List[str]]=None, 
         perplex_thred: int=10,
         num_perturbations: int=3,
         verbose: bool=False, 
@@ -124,3 +193,20 @@ class Negator(object):
 
         if blanked_sent:
             blanked_sents = [blanked_sent] if type(blanked_sent) == str else blanked_sent
+
+        else:
+            blanked_sents = self.get_random_blanked_sentences(orig_doc.text)
+
+        prompts = get_prompts(
+            doc=orig_doc, 
+            blanked_sents=blanked_sents, 
+            is_complete_blank=is_complete_blank)       
+
+        print(prompts,"\n")
+
+        generated = self.generate_answers(prompts,num_beams=5, num_return_sequences=3)
+        print(generated)
+
+        return generated
+
+

@@ -13,7 +13,7 @@ from peft import PromptTuningConfig, TaskType, PromptTuningInit, get_peft_model,
 from .inference import get_outputs, NegationModel
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from datasets import load_dataset, concatenate_datasets
-from Evaluation import evaluate_model
+from ..Evaluation.evaluate import evaluate_model
 
 
 def set_random_seed(seed):
