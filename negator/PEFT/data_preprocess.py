@@ -11,7 +11,8 @@ from sklearn.utils import shuffle
 from .config import SEED, TEST_SIZE
 from datasets import load_dataset, concatenate_datasets,Dataset
 from sklearn.model_selection import train_test_split
-
+#from ..negator_wrapper import Negator
+from ..generation_processing import get_prompts, Special_tokens
 
 class TargetType(Enum):
   PAD = 0
@@ -21,13 +22,7 @@ class TargetType(Enum):
   INFILL = 4
   INFILL_SPECIAL = 5
 
-class Special_tokens():
-    PERETURB_TOK = "<|perturb|>"
-    BLANK_TOK = "[BLANK]"
-    SEP_TOK = "[SEP]"
-    ANSWER_TOK = "[ANSWER]"
-    NEG_TOK = "[negation]"
-    EMPTY_TOK = "[EMPTY]"
+class Basic_tokens(Special_tokens):
 
     @classmethod
     def initialize_token_ids(cls, tokenizer):
@@ -259,7 +254,7 @@ class Trainer_preprocess:
 
     def tokenized_special_tokens(self):
         # Call the function to initialize token IDs
-        Special_tokens.initialize_token_ids(self.tokenizer)
+        Basic_tokens.initialize_token_ids(self.tokenizer)
 
     def extract_token(self, token_list, special_tok_ids, target_value):
         # Mask the position of special tokens
@@ -282,11 +277,11 @@ class Trainer_preprocess:
         labels = [TargetType.PAD.value] * len(tokens)
 
         special_list = [
-            Special_tokens.PERETURB_TOK_ID, 
-            Special_tokens.BLANK_TOK_ID, 
-            Special_tokens.NEG_TOK_ID,
-            Special_tokens.SEP_TOK_ID,
-            Special_tokens.ANSWER_TOK_ID
+            Basic_tokens.PERETURB_TOK_ID, 
+            Basic_tokens.BLANK_TOK_ID, 
+            Basic_tokens.NEG_TOK_ID,
+            Basic_tokens.SEP_TOK_ID,
+            Basic_tokens.ANSWER_TOK_ID
         ]
         target_list = [
             TargetType.CONTEXT_SPECIAL.value,
@@ -399,6 +394,56 @@ def split_dataset(train_dataset:list):
 
     return new_train,new_valid
 
+def process_and_blank_sentences(
+    data_path, 
+    sample_size=2, 
+    max_blank=1, 
+    max_sent=2, 
+    is_token_only=False
+):
+    """
+    Reads a dataset, samples sentences, and generates blanked sentences.
+
+    Parameters:
+    - data_path: str, path to the dataset file
+    - sample_size: int, number of sentences to sample
+    - max_blank_block: int, maximum number of blanks to apply
+
+    Returns:
+    - List of blanked sentences
+    """
+
+    from ..negator_wrapper import Negator
+    negator_aug = Negator()
+
+
+    # Read the file using tab as delimiter
+    df_test = pd.read_csv(data_path, delimiter='\t', encoding='ISO-8859-1', on_bad_lines='skip').drop(columns=['index'])
+    #print(len(df_test))
+
+    # Filter out rows where the 'Text' column contains the word 'not'
+    df_filtered = df_test[~df_test['Text'].str.contains('not', case=False, na=False)]
+
+    # Sample a specified number of rows from the filtered DataFrame
+    if len(df_filtered) < sample_size:
+        raise ValueError("Sample size is greater than the number of available filtered rows.")
+    
+    #print(len(df_filtered))
+
+    df_sample = df_filtered.sample(n=sample_size,random_state=SEED)
+    sentences = list(df_sample['Text'])
+
+    # List to store the blanked sentences
+    test_blanked = []
+
+    # Process each sentence to get blanked versions
+    for sentence in sentences:
+        orig_doc = negator_aug._process(sentence) if type(sentence) == str else sentence
+        blanked_sents = negator_aug.get_random_blanked_sentences(orig_doc, max_blank_block = max_blank,max_blank_sent_count = max_sent,is_token_only=is_token_only)
+        prompts = get_prompts(orig_doc, blanked_sents,is_complete_blank=False)
+        test_blanked.extend(prompts)
+
+    return test_blanked
 
 
 

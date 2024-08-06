@@ -7,16 +7,17 @@ import os
 from .config import *
 
 from transformers import AutoTokenizer, AutoModelForCausalLM
-from .data_preprocess import TargetType, Special_tokens
+from .data_preprocess import TargetType
+from ..generation_processing import Special_tokens
 from torch.optim import AdamW
 from peft import PromptTuningConfig, TaskType, PromptTuningInit, get_peft_model,PeftModel
 from sklearn.model_selection import train_test_split
 
-def setup_model(model_path):
+def setup_model(model_path: str):
   device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
   tokenizer = AutoTokenizer.from_pretrained(model_path)
   tokenizer.pad_token = None #self.tokenizer.eos_token
-  model = AutoModelForCausalLM.from_pretrained(model_path) #.to(device)
+  model = AutoModelForCausalLM.from_pretrained(model_path).to(device)
 
   # Add a new pad token if it doesn't exist and set it to ID 0
   if tokenizer.pad_token is None:
@@ -64,10 +65,13 @@ def plot_training_loss(train_history, valid_history):
     plt.xticks(ticks=epochs)  # Set x-axis ticks to integer values
     plt.grid(True)
     plt.legend()
-    plt.show()
+    
+    plt.savefig('./negator/figures/training_validation_loss.png')
+    plt.close()
 
 
-def train_fn(train_dataloader,model,device,optimizer,num_virtual_tokens): 
+
+def train_fn(train_dataloader,model,device,optimizer,num_virtual_tokens: int)-> float:
 
   total_loss = 0
   train_context = True
@@ -175,7 +179,7 @@ def train_engine(train_loader,valid_loader,train_num_epochs,model, device,num_vi
   return model
 
 
-def create_peft_model(num_virtual_tokens, model_path = "uw-hai/polyjuice"):
+def create_peft_model(num_virtual_tokens: int, model_path: str = "uw-hai/polyjuice"):
   
   foundational_model = AutoModelForCausalLM.from_pretrained(model_path)
   # Define prompt tuning configuration
@@ -192,7 +196,7 @@ def create_peft_model(num_virtual_tokens, model_path = "uw-hai/polyjuice"):
   return peft_model
 
 
-def create_model_directories(base_dir, output_dir_name):
+def create_model_directories(base_dir: str, output_dir_name: str) -> str:
     """
     Creates the base and output directories for storing models if they do not exist.
     

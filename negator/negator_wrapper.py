@@ -2,12 +2,12 @@ import torch
 import numpy as np
 from spacy.tokens import Doc
 from typing import List, Dict, Tuple
-from .Evaluation.semantic_filter import load_distance_scorer, compute_sent_cosine_distance
+from .Evaluation.semantic_filter import load_distance_scorer
+from .Evaluation import compute_edit_ops, compute_delta_perplexity,load_perplex_scorer,filter_by_sent_perplexity
 from .generation_processing import get_outputs
 from .PEFT.training_helper import setup_model
 from peft import PeftModel
-from .PEFT.data_preprocess import Special_tokens
-from .generation_processing import remove_blanks
+from .generation_processing import remove_blanks, Special_tokens
 from .PEFT.inference import NegationModel
 import warnings
 
@@ -28,8 +28,7 @@ logger = logging.getLogger(__name__)  # pylint: disable=invalid-name
 
 class Negator(object):
     def __init__(self, model_path: str="uw-hai/polyjuice", is_cuda: bool=True, directory: str = "negator/PEFT/peft_outputs") -> None:
-        """The wrapper.
-
+        """The class to negate sentences
         Args:
             model_path (str, optional): The path to the generator.
                 Defaults to "uw-hai/polyjuice". 
@@ -45,7 +44,7 @@ class Negator(object):
         self.generator = None
         self.spacy_processor = None
         self.device, self.tokenizer, self.model = setup_model(model_path)
-        self.loaded_model = PeftModel.from_pretrained(self.model, directory, is_trainable=False)
+        self.loaded_model = PeftModel.from_pretrained(self.model, directory, is_trainable=False).to(self.device)
 
         self.is_cuda = is_cuda and torch.cuda.is_available()
 
@@ -65,6 +64,11 @@ class Negator(object):
         else:
             loader = getattr(self, f"_load_{model_name}", None)
             return loader and loader()
+        
+    def _load_perplex_scorer(self):
+        logger.info("Setup perplexity scorer.")
+        self.perplex_scorer = load_perplex_scorer(is_cuda=self.is_cuda)
+        return True   
 
     def _load_spacy_processor(self, is_space_tokenizer: bool=False):
         logger.info("Setup SpaCy processor.")
@@ -78,6 +82,15 @@ class Negator(object):
     def _load_distance_scorer(self):
         self.distance_scorer = load_distance_scorer(self.is_cuda)
         return True
+    
+    def _compute_delta_perplexity(self, eops):
+        if not self.validate_and_load_model("perplex_scorer"): return None
+        return compute_delta_perplexity(eops, self.perplex_scorer, is_cuda=self.is_cuda,is_normalize=True)   
+    
+    def _compute_sent_perplexity(self, sent):
+        if not self.validate_and_load_model("perplex_scorer"): return None
+        return filter_by_sent_perplexity(sent, self.perplex_scorer, is_cuda=self.is_cuda)  
+
 
     ##############################################
     # validation
@@ -88,7 +101,7 @@ class Negator(object):
         pre_selected_idxes: List[int]=None,
         deps: List[str]=None,
         is_token_only: bool=False,
-        max_blank_sent_count: int=2,
+        max_blank_sent_count: int=3,
         max_blank_block: int=1) -> List[str]:
         """Generate some random blanks for a given sentence
 
@@ -124,15 +137,28 @@ class Negator(object):
 
         blanked_sents = create_blanked_sents(sentence, indexes)
         return blanked_sents
-    
-    def generate_answers(self,prompts,num_beams=3, num_return_sequences=3):
 
-        input_prompt = self.tokenizer(prompts, return_tensors='pt', padding=True, truncation=True)
+    def generate_answers(
+        self,
+        prompts: List[str],
+        num_beams: int = 3,
+        num_return_sequences: int = 3) -> List[str]:
+        """
+        Generates multiple answer sequences from a list of prompts using beam search.
+
+        Args:
+            prompts (List[str]): A list of text prompts to generate answers for.
+            num_beams (int, optional): The number of beams to use for beam search. Defaults to 3.
+            num_return_sequences (int, optional): The number of sequences to return for each prompt. Defaults to 3.
+
+        Returns:
+            List[str]: A list of generated answers with blanks removed.
+        """
+    
+
+        input_prompt = self.tokenizer(prompts, return_tensors='pt', padding=True, truncation=True).to(self.device)
         outputs_peft_model = get_outputs(self.loaded_model, input_prompt, num_beams=num_beams, num_return_sequences=num_return_sequences)
         preds_list = self.tokenizer.batch_decode(outputs_peft_model, skip_special_tokens=True)
-
-        if len(prompts) == 1:
-            preds_list = [preds_list]
 
         preds_list_cleaned = []
 
@@ -195,18 +221,49 @@ class Negator(object):
             blanked_sents = [blanked_sent] if type(blanked_sent) == str else blanked_sent
 
         else:
-            blanked_sents = self.get_random_blanked_sentences(orig_doc.text)
+            blanked_sents = self.get_random_blanked_sentences(orig_doc.text,max_blank_block=2)
 
         prompts = get_prompts(
             doc=orig_doc, 
             blanked_sents=blanked_sents, 
             is_complete_blank=is_complete_blank)       
 
-        print(prompts,"\n")
+        #print(prompts,"\n")
 
-        generated = self.generate_answers(prompts,num_beams=5, num_return_sequences=3)
-        print(generated)
+        generated = self.generate_answers(prompts,**kwargs) #num_beams=5
+
+        validated_set = []
+        for sentence in generated:
+            # skip 
+            if sentence in validated_set or sentence.lower() == orig_doc.text.lower(): 
+                continue
+            is_valid = True
+            generated_doc = self._process(sentence)
+            eop = compute_edit_ops(orig_doc, generated_doc)
+
+            if perplex_thred is not None:
+                pp = self._compute_delta_perplexity(eop)
+                is_valid = pp.pr_sent < perplex_thred and pp.pr_phrase < perplex_thred
+
 
         return generated
 
 
+def calculate_perplexity(model, tokenizer, sentence, device):
+    model.eval()
+    input_text = sentence.split('[SEP]')[0]
+    input_len = tokenizer.encode(input_text, return_tensors='pt').shape[-1]
+    
+    input_ids = tokenizer.encode(sentence, return_tensors='pt').to(device)
+
+    # Create labels tensor with masked token IDs
+    labels = input_ids.clone()
+    labels[:, :input_len] = -100  # Mask loss for the input part
+
+    with torch.no_grad():
+        outputs = model(input_ids, labels=labels)
+        loss = outputs.loss
+
+    # Calculate perplexity
+    perplexity = torch.exp(loss)
+    return perplexity.item()

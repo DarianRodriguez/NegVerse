@@ -7,13 +7,14 @@ import matplotlib.pyplot as plt
 import numpy as np
 import torch
 
-from .data_preprocess import TextGenerationSetup, process_dataframe, Trainer_preprocess, process_dataframe_general, process_data, load_data, split_dataset
+from .data_preprocess import TextGenerationSetup, process_dataframe, Trainer_preprocess, process_dataframe_general, process_data, load_data, split_dataset,process_and_blank_sentences
 from .training_helper import setup_model,create_model_directories, create_peft_model, train_engine
 from peft import PromptTuningConfig, TaskType, PromptTuningInit, get_peft_model,PeftModel
 from .inference import get_outputs, NegationModel
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from datasets import load_dataset, concatenate_datasets
 from ..Evaluation.evaluate import evaluate_model
+from .config import TEST_SIZE
 
 
 def set_random_seed(seed):
@@ -77,9 +78,11 @@ print(outputs["trained_model_outputs"])
 print("\nOriginal Model Outputs:")
 print(outputs["original_model_outputs"])
 
-test_data = val_dataset
-test_data = [text.split('[SEP]')[0].strip() for text in test_data['input_text']]
-test_data = test_data[:8]
+data_path = './negator/data/nli/SNLI.txt'
+test_data  = process_and_blank_sentences(data_path, sample_size=300, max_blank=2,max_sent=6)
+
+#test_data = [text.split('[SEP]')[0].strip() for text in test_data['input_text']]
+#test_data = test_data[:8]
 
 evaluate_model(test_data)
 

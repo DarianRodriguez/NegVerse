@@ -1,0 +1,24 @@
+ A woman is not for directions in front of a colorful map. 
+ A woman EMPTY for directions in front of a colorful map. 
+ A woman is looking for directions in front of a colorful map. 
+ A woman asking for directions to a store is showing a map of a city to a group of people.
+ A woman asking for directions to a store is showing a map of a city to a group of people..
+ A woman asking for directions to a store is selling food.
+ A woman looking out the window for a coyote.
+ A woman looking out the window for a city.
+ A woman looking for something to eat in a restaurant.
+ A woman asking for directions in front of plain sight.
+ A woman asking for directions in front of a food truck.
+ A woman asking for directions in front of a food cart.
+ A girl stands in a dimly lit room.
+ A girl stands in a dim room.
+ A girl stands in a dim light.
+ A girl stands in a dark area.
+ A girl stands in a dim area.
+ A girl is standing in a dim area.
+ A girl stands in a EMPTY lit area.
+ A girl stands in a bright orange lit area.
+ A girl stands in a dark lit area.
+ A girl stands in a dimly lit area.
+ A girl is standing in a dimly lit area.
+ A girl is not in a dimly lit area.

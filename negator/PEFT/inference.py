@@ -37,6 +37,7 @@ class NegationModel:
         # Tokenize the input prompt
         #input_prompt = self.tokenizer(input_prompt_text, return_tensors="pt")
         input_prompt = self.tokenizer(input_prompt_text, return_tensors='pt', padding=True, truncation=True)
+        input_prompt = {key: value.to(self.device) for key, value in input_prompt.items()}
 
         #input_prompt =  self.tokenizer(input_prompt_text, return_tensors="pt", padding="max_length", max_length=100) 
         

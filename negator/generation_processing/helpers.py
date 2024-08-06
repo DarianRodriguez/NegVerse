@@ -1,9 +1,16 @@
 
 
-from ..PEFT.data_preprocess import Special_tokens
+#from ..PEFT.data_preprocess import Special_tokens
 
 import re
 
+class Special_tokens():
+    PERETURB_TOK = "<|perturb|>"
+    BLANK_TOK = "[BLANK]"
+    SEP_TOK = "[SEP]"
+    ANSWER_TOK = "[ANSWER]"
+    NEG_TOK = "[negation]"
+    EMPTY_TOK = "[EMPTY]"
 
 def remove_blanks(total_sequence: str ) -> str:
 
