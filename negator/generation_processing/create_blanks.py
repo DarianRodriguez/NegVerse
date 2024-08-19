@@ -20,15 +20,16 @@ def create_blanked_sents(doc, indexes=None):
 def find_matching_indices(doc, pos_list,  dep_list):
     matching_indices = []
 
-    for i, token in enumerate(doc):
-        #print(pos_list, dep_list)
-        if dep_list is None:
-            # If dep_list is None, accept any dependency for the given POS
-            if token.pos_ in pos_list:
-                matching_indices.append(i)
-        else:
-            if token.pos_ in pos_list and token.dep_ in dep_list:
-                matching_indices.append(i)
+    if pos_list is not None:
+        for i, token in enumerate(doc):
+            #print(pos_list, dep_list)
+            if dep_list is None:
+                # If dep_list is None, accept any dependency for the given POS
+                if token.pos_ in pos_list:
+                    matching_indices.append(i)
+            else:
+                if token.pos_ in pos_list and token.dep_ in dep_list:
+                    matching_indices.append(i)
 
     return matching_indices
 
@@ -38,7 +39,9 @@ def get_one_random_idx_set(
     pre_selected_idxes=None, is_token_only=False):
     if req_dep is not None:
         if type(req_dep) == str: req_dep = [req_dep]
-        idx_range = find_matching_indices(doc, *req_dep)
+        idx_range_sp = unify_tags(doc,*req_dep) 
+        idx_range = idx_range_sp.copy()
+        idx_range.extend(find_matching_indices(doc, *req_dep))
     else:
         idx_range = list(range(len(doc)))
     # only keep those pre_selected_idxes
@@ -47,12 +50,14 @@ def get_one_random_idx_set(
     max_blank_block = min(len(idx_range), max_blank_block)        
     #print(req_dep, idx_range)
     selected_indexes = []
+
     while max_blank_block > 0 and not selected_indexes:
         # if fixed the thing to change, then do one specific change
         n_perturb = np.random.choice(list(range(1, max_blank_block+1))) #if req_dep is None else 1
         replace_idx, total_run = -1, 1000
         while (total_run > 0 and n_perturb > 0): #and  len(span_and_edits) == 0:
             replace_idx = np.random.choice(idx_range)
+            mask = replace_idx in idx_range_sp
             token = doc[replace_idx]
             if token.is_punct:
                 total_run -= 1
@@ -62,9 +67,9 @@ def get_one_random_idx_set(
                 # if fixed the tree, then mostly use the tree
                 if is_token_only:  p = [1, 0, 0]
                 elif req_dep is None: p = [0.4, 0.35, 0.25]
-                else: p = [0.7, 0.3, 0]
+                else: p = [0.2, 0.8, 0]
             is_replace_subtree = np.random.choice(["token", "subtree", "insert"], p=p)
-            if is_replace_subtree == "subtree":
+            if ((is_replace_subtree == "subtree")  or  mask):
                 start, end = token.left_edge.i, token.right_edge.i+1
             elif is_replace_subtree == "token" and token.pos_ == 'DET':
                 start, end = token.i, token.i+2
@@ -88,8 +93,12 @@ def get_random_idxes(doc,
     unique_blanks = {str([[0, len(doc)]]): [[0, len(doc)]]}
     #default_deps = [None, "", ["subj","obj"], ["aux", "ROOT"], ["conj", "modifier", "clause"]]
 
-    default_deps = [ None, ["nsubj", "dobj"],["det"],["advmod"],None]
-    default_pos = [ ["VERB","AUX"], ["PRON"],["DET"],["ADV"],["ADJ"]]
+    if is_token_only:
+        default_deps = [ None, ["subj","obj"],["advmod"],None,["det"]]
+        default_pos = [ ["VERB","AUX"], None,["ADV"],["ADJ"],["DET"]]
+    else:
+        default_deps = [ None, ["subj","obj"],["advmod"],None,["prep"],["det"]]
+        default_pos = [ ["VERB","AUX"], None,["ADV"],["ADJ"],["ADP"],["DET"]]
 
     default_rules = list(zip(default_pos, default_deps))
 

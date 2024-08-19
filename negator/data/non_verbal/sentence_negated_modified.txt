@@ -53,6 +53,9 @@ Not surprisingly, they didn't want any part of it.	Surprisingly, they didn't wan
 Not surprisingly, they didn't want any part of it.	Surprisingly, they wanted some part of it.
 Surprisingly, none of them wanted any part of it.	Surprisingly, they wanted some part of it.
 She did not contemplate giving up at any stages of the proceedings.	She contemplated giving up at some stages of the proceedings.
+She contemplated giving up at no significant stages of the proceedings.	She contemplated giving up at some stages of the proceedings.
+She contemplated giving up at none of the stages of the proceedings.	She contemplated giving up at some stages of the proceedings.
+She contemplated giving up at no stages of the proceedings.	She contemplated giving up at some stages of the proceedings.
 She did not feel utterly betrayed.	she felt utterly betrayed.
 She had not felt utterly betrayed before.	She had felt utterly betrayed before.
 She had never felt utterly betrayed before.	She had felt utterly betrayed before.
@@ -100,4 +103,73 @@ None of them supported her.	One of them supported her.
 None of them supported her.	Two of them supported her.
 None of them supported her.	Twenty of them supported her.
 None of them supported her.	some of them supported her.
+Not every student passed the test	Some students passed the test.
+He seldom attends the meetings.	He attends the meetings.
+There was no laughter in the room.	There was laughter in the room.
+Nobody answered the phone.	Somebody answered the phone.
+No one answered the phone.	Somebody answered the phone.
+Neither solution was effective in solving the problem.	Both solutions were effective in solving the problem.
+He seldom enjoys going to the theater.	He enjoys going to the theater.
+There were no friendly faces in the crowd.	There were friendly faces in the crowd.
+Not many employees attended the company meeting.	Many employees attended the company meeting.
+He offered not much advice during the discussion.	He offered a lot of advice during the discussion.
+Nobody volunteered to help organize the event.	Somebody volunteered to help organize the event.
+She rarely speaks up during meetings.	She speaks up during meetings.
+No one speaks up during meetings.	She speaks up during meetings.
+She found her wallet nowhere in the car.	She found her wallet somewhere in the car.
+She found her wallet somewhere not in the car.	She found her wallet somewhere in the car.
+No one volunteered to take the lead on the project.	Someone volunteered to take the lead on the project.
+None of the students failed	All the students passed the exam.
+No one knew the answer to the question.	That person knew the answer to the question.
+That person knew no answers to the question.	That person knew the answer to the question.
+No one understood the complex instructions.	The woman understood the complex instructions.
+The woman understood none of the complex instructions.	The woman understood the complex instructions.
+Nobody understood the complex instructions.	The woman understood the complex instructions.
+Nobody offered to help with the project.	She offered to help with the project.
+Nobody was aware of the change in schedule	He was aware of the change in schedule.
+None of the employees completed their project reports by the deadline.	The employees completed their project reports by the deadline.
+The employees had completed their project reports, but not by the deadline.	The employees had completed their project reports by the deadline.
+The employees had completed no project reports by the deadline.	The employees had completed their project reports by the deadline.
+No employees had completed their project reports after the deadline.	The employees had completed their project reports by the deadline.
+The employees may not have completed even one project report on time.	The employees had completed their project reports by the deadline.
+None of the students participated in the extra-curricular activities.	The students participated in the extra-curricular activities.
+The conference sessions were well-attended, and the speakers failed to engage the audience.	The conference sessions were well-attended, and none of the speakers failed to engage the audience.
+She did not write the report and did not submit it on time.	She wrote the report and submitted it on time.
+She wrote the report but failed to submit it on time.	She wrote the report and submitted it on time.
+She wrote no report and did not submit it at all.	She wrote the report and submitted it on time.
+They did not plan the event and did not execute it successfully.	They planned the event and executed it successfully.
+He did not complete the project and did not present his findings to the team.	He completed the project and presented his findings to the team.
+He completed none of the project and presented none of his findings to the team.	He completed the project and presented his findings to the team.
+Nobody completed the project and presented his findings to the team.	He completed the project and presented his findings to the team.
+No one completed the project and presented his findings to the team.	He completed the project and presented his findings to the team.
+He did not complete any project and did not present any of his findings to any team.	He completed the project and presented his findings to the team.
+No one completed no part of the project and presented none of his findings to any team.	He completed the project and presented his findings to the team.
+She does not answer all the questions and does not resolve the issues promptly.	She answers all the questions and resolves the issues promptly.
+She answers none of the questions and resolves no issues promptly.	She answers all the questions and resolves the issues promptly.
+She answers no questions and resolves none of the issues promptly.	She answers all the questions and resolves the issues promptly.
+They do not cook dinner and do not serve it to their guests.	They cook dinner and serve it to their guests.
+They don't cook dinner and do not serve it to their guests.	They cook dinner and serve it to their guests.
+They rarely cook dinner and seldom serve it to their guests.	They cook dinner and serve it to their guests.
+They cook no dinner and serve nothing to their guests.	They cook dinner and serve it to their guests.
+They cook no dinner and serve it to none of their guests.	They cook dinner and serve it to their guests.
+The family decorated no house with festive lights.	The family decorated the house with festive lights.
+The family did not decorate no house without festive lights.	The family decorated the house with festive lights.
+She does not visit the museum frequently.	She visits the museum frequently.
+She visits the museum infrequently.	She visits the museum frequently.
+She does not visit the museum rarely.	She visits the museum frequently.
+She doesn't visit the museum rarely.	She visits the museum frequently.
+She will meet us at the restaurant.	She will meet us nowhere
+They find comfort nowhere.	They find comfort in familiar places.
+He looks for his keys in no room.	He looks for his keys in every room.
+She buys fresh produce nowhere.	She buys fresh produce at the market.
+No one buys fresh products at the market.	She buys fresh products at the market.
+Not everyone buys fresh products at the market.	She buys fresh products at the market.
+No one buys fresh products at the market.	She buys fresh products at the market.
+No one buys fresh products at no market.	She buys fresh products at the market.
+The solution is neither simple nor effective.	The solution is simple and effective.
+He will attend neither the meeting nor the workshop.	He will attend the meeting or the workshop..
+The solution is neither simple nor effective.	The solution is simple and effective.
+She likes neither coffee nor tea.	She likes both coffee and tea.
+They bought neither apples nor oranges nor bananas.	They bought apples, oranges, and bananas.
+The project was neither successful nor profitable nor timely.	The project was successful, profitable, and timely.
 

@@ -2,6 +2,7 @@ import math
 import numpy as np
 from munch import Munch
 from transformers import GPT2LMHeadModel, GPT2TokenizerFast
+from torch.utils.data import DataLoader
 
 import torch
 from copy import deepcopy
@@ -86,37 +87,66 @@ def normalize_score_2(log_score, slen):
         return float('inf')  # or another appropriate indicator
     return log_score / slen
 
-def compute_sent_perplexity(
-    sentences, perplex_scorer, log=True, reduce="prod", is_normalize=False, is_cuda=True):
+
+def compute_sent_perplexity(sentences, batch_size=16):
     """Compute the sentence perplexity. For filtering.
 
     Args:
         sentences ([type]): [description]
         perplex_scorer ([type]): [description]
-        log (bool, optional): [description]. Defaults to True.
-        reduce (str, optional): [description]. Defaults to "prod".
-        is_normalize (bool, optional): [description]. Defaults to False.
-
+        
     Returns:
         [type]: [description]
     """
-    scores = []
-    model, tokenizer = perplex_scorer.model, perplex_scorer.tokenizer
-    outputs = _tokens_log_prob(sentences, model, tokenizer, is_cuda=is_cuda)
-    for sent_log_prob, sent_ids, sent_tokens in outputs:
-        score = reduce_perplex_prob(sent_log_prob, reduce=reduce, log=log)
-        if is_normalize:
-            score = normalize_score(score, len(sent_tokens))
-        scores.append(score)
-    #print("scores",scores)
-    return scores
+    
+    #print(sentences)
+    
+    model_id = "openai-community/gpt2-large"
+    model = GPT2LMHeadModel.from_pretrained(model_id)
+    tokenizer = GPT2TokenizerFast.from_pretrained(model_id)
+    tokenizer.pad_token = tokenizer.eos_token
 
-def filter_by_sent_perplexity(sentences, perplex_scorer, thred=20, is_cuda=True):
-    scores = compute_sent_perplexity(
-        sentences, perplex_scorer, log=True, reduce="prod", is_normalize=True, is_cuda=is_cuda)
-    idxes = np.where(np.array(scores) <= thred)[0]
-    filtered =  [sentences[i] for i in idxes]
-    #print("filtered are", filtered)
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model.to(device)
+    model.eval()
+
+    # Create a DataLoader to handle batching
+    data_loader = DataLoader(sentences, batch_size=batch_size, shuffle=False)
+    
+    perplexities = []
+    
+    for batch in data_loader:
+        batch_ppl = compute_perplexity(model, tokenizer, batch, device)
+        # Check if batch_ppl is NaN
+        if not np.isnan(batch_ppl):
+            perplexities.append(batch_ppl)
+
+        
+    #print("ppl",perplexities)    
+    avg_perplexity = np.mean(perplexities)
+    
+    return avg_perplexity
+
+
+def compute_perplexity(model, tokenizer, sentences, device):
+
+    encoding = tokenizer(sentences, return_tensors='pt', padding=True, truncation=True)
+    input_ids = encoding['input_ids'].to(device)
+    
+    # Create labels tensor
+    labels = input_ids.clone()
+
+    # Compute perplexity
+    with torch.no_grad():
+        outputs = model(input_ids, labels=labels)
+        loss = outputs.loss
+
+    # Print loss for debugging
+    #print(f"Loss: {loss.item()}")
+
+    # Calculate perplexity
+    perplexity = np.exp(loss.item())
+    return perplexity
 
 def compute_phrase_perplexity(
     sentence_phrase_tuples, perplex_scorer, 

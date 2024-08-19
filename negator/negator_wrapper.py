@@ -3,7 +3,7 @@ import numpy as np
 from spacy.tokens import Doc
 from typing import List, Dict, Tuple
 from .Evaluation.semantic_filter import load_distance_scorer
-from .Evaluation import compute_edit_ops, compute_delta_perplexity,load_perplex_scorer,filter_by_sent_perplexity
+from .Evaluation import compute_edit_ops, compute_delta_perplexity,load_perplex_scorer,compute_sent_perplexity
 from .generation_processing import get_outputs
 from .PEFT.training_helper import setup_model
 from peft import PeftModel
@@ -87,9 +87,6 @@ class Negator(object):
         if not self.validate_and_load_model("perplex_scorer"): return None
         return compute_delta_perplexity(eops, self.perplex_scorer, is_cuda=self.is_cuda,is_normalize=True)   
     
-    def _compute_sent_perplexity(self, sent):
-        if not self.validate_and_load_model("perplex_scorer"): return None
-        return filter_by_sent_perplexity(sent, self.perplex_scorer, is_cuda=self.is_cuda)  
 
 
     ##############################################
@@ -247,23 +244,3 @@ class Negator(object):
 
 
         return generated
-
-
-def calculate_perplexity(model, tokenizer, sentence, device):
-    model.eval()
-    input_text = sentence.split('[SEP]')[0]
-    input_len = tokenizer.encode(input_text, return_tensors='pt').shape[-1]
-    
-    input_ids = tokenizer.encode(sentence, return_tensors='pt').to(device)
-
-    # Create labels tensor with masked token IDs
-    labels = input_ids.clone()
-    labels[:, :input_len] = -100  # Mask loss for the input part
-
-    with torch.no_grad():
-        outputs = model(input_ids, labels=labels)
-        loss = outputs.loss
-
-    # Calculate perplexity
-    perplexity = torch.exp(loss)
-    return perplexity.item()

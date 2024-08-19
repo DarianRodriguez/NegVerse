@@ -6,6 +6,7 @@ from torch.utils.data import DataLoader
 from ..generation_processing import remove_blanks
 from ..PEFT.data_preprocess import Special_tokens
 from .eval_metrics import compute_closeness,compute_self_bleu
+from .perplex_filter import compute_sent_perplexity
 from tqdm import tqdm
 from .some import Scorer
 
@@ -99,6 +100,11 @@ def evaluate_model(test_data: List[str], file_name: str = "") -> Dict[str, float
     peft_tree_dist, peft_lev_dist = [], []
     peft_bleu, org_bleu = [], []
     gen_org_clean, gen_peft_clean = [], []
+    #poly_ppl, peft_ppl = [],[]
+
+    previous_original = None
+    grouped_gen_docs = []
+    grouped_poly_docs = []
 
     generations_peft,generations_original = query_model(test_data)
 
@@ -117,6 +123,23 @@ def evaluate_model(test_data: List[str], file_name: str = "") -> Dict[str, float
         gen_doc = negator_object._process(replaced_peft.lower())
         org_doc = negator_object._process(replaced_original.lower())
 
+        # Check if the original is the same as the previous one
+        if original == previous_original:
+            # Expand the last sublist by adding gen_doc to the last group
+            grouped_gen_docs[-1].extend([gen_doc])
+            grouped_poly_docs[-1].extend([org_doc])
+        else:
+            # Original is different; create a new sublist with the gen_doc
+            grouped_gen_docs.append([gen_doc])
+            grouped_poly_docs.append([org_doc])
+
+        # Update previous_original for the next iteration
+        previous_original = original
+
+        # Compute perplexity
+        #poly_ppl.append(negator_object.calculate_sent_perplexity(replaced_original))
+        #peft_ppl.append(negator_object.calculate_sent_perplexity(replaced_peft))
+
         # Compute closeness and diversity metric with trained model
         closeness = compute_closeness([gen_doc],ref_doc)
         peft_tree_dist.append(closeness['tree_dist'])
@@ -127,10 +150,14 @@ def evaluate_model(test_data: List[str], file_name: str = "") -> Dict[str, float
         org_tree_dist.append(closeness['tree_dist'])
         org_lev_dist.append(closeness['edit_dist'])
 
-        diversity = compute_self_bleu([gen_doc], ref_doc)
+    for index in range(len(grouped_gen_docs)):
+        diversity = compute_self_bleu(grouped_gen_docs[index])
         peft_bleu.append(diversity['bleu4'])
-        diversity = compute_self_bleu([org_doc], ref_doc)
+        diversity = compute_self_bleu(grouped_poly_docs[index])
         org_bleu.append(diversity['bleu4'])
+
+    poly_ppl = compute_sent_perplexity(gen_org_clean,batch_size = 1)
+    peft_ppl = compute_sent_perplexity(gen_peft_clean,batch_size = 1)
 
 
     avg_tree_peft = np.mean(peft_tree_dist)
@@ -138,7 +165,10 @@ def evaluate_model(test_data: List[str], file_name: str = "") -> Dict[str, float
     avg_tree_orig = np.mean(org_tree_dist)
     avg_lev_orig = np.mean(org_lev_dist)
     avg_bleu_orig = np.mean(org_bleu)
-    avg_bleu_peft = np.mean(org_lev_dist)
+    avg_bleu_peft = np.mean(peft_bleu)
+    avrg_ppl_orig = np.mean(poly_ppl)
+    avrg_ppl_peft = np.mean(peft_ppl)
+
 
     folder = "reports"
     # Save cleaned sentences to a text file
@@ -153,12 +183,14 @@ def evaluate_model(test_data: List[str], file_name: str = "") -> Dict[str, float
     print(f"Average Syntactic Tree Distance (Poly): {avg_tree_orig:.3f}")
     print(f"Average Levenshtein Distance (Poly): {avg_lev_orig:.3f}")
     print(f"Average Bleu Score (Poly): {avg_bleu_orig:.3f}")
+    print(f"Average PPL Score (Poly): {avrg_ppl_orig:.3f}")
     calculate_some(gen_org_clean,file_path = f"{folder}/scores_poly_{file_name}.txt")
 
     print('\n### PEFT ########')
     print(f"Average Syntactic Tree Distance (PEFT): {avg_tree_peft:.3f}")
     print(f"Average Levenshtein Distance (PEFT): {avg_lev_peft:.3f}")
     print(f"Average Bleu Score (PEFT): {avg_bleu_peft:.3f}")
+    print(f"Average PPL Score (PEFT): {avrg_ppl_peft:.3f}")
     calculate_some(gen_peft_clean,file_path =  f"{folder}/scores_peft_{file_name}.txt")
     
 

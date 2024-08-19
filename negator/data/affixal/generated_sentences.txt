@@ -2,16 +2,17 @@ negated	original
 The employee was unable to complete the project on time.	The employee was able to complete the project on time.
 The project has been inactive for the past year.	The project has been active since last year.
 The team leader's decision to change the project timeline was met with widespread disagreement from the team members.	The team leader's decision to change the project timeline was met with widespread agreement from the team members.
-The magician made the assistant disappear from the stage.	The magician made the assistant appear from behind a curtain.
+The magician made the assistant disappear from the stage.	The magician made the assistant appear from the stage.
 The manager's disapproval of the proposal was evident in his stern expression.	The manager's approval of the proposal was evident in his warm smile.
 The company's goal of increasing sales by 20% in the next quarter seemed unattainable given the current market conditions.	The company's goal of increasing sales by 20% in the next quarter seemed attainable given the favorable market conditions.
-The company's finances were unbalanced due to the high levels of debt.	The company's finances were balanced with a healthy mix of debt and equity.
-The new employee's work ethic was unbelievable, he was able to complete tasks in half the time it took others.	The new employee's work ethic was believable, he was able to complete tasks in half the time it took others.
+The company's finances were unbalanced due to the high levels of debt.	The company's finances were balanced due to the low levels of debt.
+The new employee's work ethic was unbelievable, he was able to complete tasks in half the time it took others.	The new employee's work ethic was believable, he was not able to complete tasks in half the time it took others.
 The employee was incapable of completing the task on time.	The employee was capable of completing the task on time.
 The future of the company remained uncertain due to the ongoing economic downturn.	The future of the company remained certain given the company's strong financial position.
 The new office chair was uncomfortable, causing discomfort during long work hours.	The new office chair was comfortable, providing relief from discomfort during long work hours.
 The company's innovative products were uncommon in the industry.	The company's innovative products were common in the industry.
-The new employee struggled to connect with his colleagues due to his shyness.	The new employee quickly connected with his colleagues and became an integral part of the team.
+None of the team members disconnect from the project.	The team members connect well during the project.
+he speaker disconnects from the audience.	The speaker connects with everyone in the audience.
 The employees were discontent with the lack of recognition for their hard work.	The employees were content with the recognition they received for their hard work.
 The company's decision to discontinue the product line was met with disappointment from customers.	The company's decision to continue investing in the product line was met with excitement from customers.
 The new policy will be inconvenient for many employees.	The new policy will be convenient for many employees.
@@ -19,57 +20,57 @@ The teacher marked the student's answer as incorrect.	The teacher marked the stu
 The company's profits were uncountable, as they were beyond imagination.	The company's profits were countable, as they were within expectation.
 The detective worked tirelessly to uncover the truth behind the crime.	The detective worked tirelessly to cover the crime scene with a tarp to protect it from the rain.
 The patient's illness was incurable, and he was given only a few months to live.	The patient's illness was curable, and he was given a new lease on life after undergoing treatment.
-The politician's behavior was indecent and unacceptable.	The politician's behavior was decent and respectful.
+The politician's behavior was indecent and unacceptable.	The politician's behavior was decent and acceptable.
 The player's offensive skills were impressive, but his defensive abilities were lacking.	The player's defensive skills were impressive, but his offensive abilities were lacking.
-The company's IT system was undependable, frequently crashing and causing delays.	The company's IT system was dependable, rarely crashing and minimizing delays.
+The company's IT system was undependable, frequently crashing and causing delays.	The company's IT system was dependable, rarely crashing and not causing delays.
 The new policy will make the workplace undesirable for many employees.	The new policy will make the workplace desirable for many employees.
-The manager's indirect criticism of the employee's work was not constructive.	The manager's direct criticism of the employee's work was constructive and helpful.
-The team's lack of discipline resulted in missed deadlines and poor project management.	The team's discipline and focus led to timely completion of projects and improved productivity.
-The evidence was indisputable, and the suspect's guilt was clear.	The evidence was disputable, and the suspect's innocence was possible.
+The manager's indirect criticism of the employee's work was not constructive.	The manager's direct criticism of the employee's work was constructive.
+The team's lack of discipline and focus led to delayed completion of projects and decreased productivity.	The team's discipline and focus led to timely completion of projects and improved productivity.
+The evidence was indisputable, and the suspect's guilt was unclear.	The evidence was disputable, and the suspect's innocence was clear.
 The customer service representative remained unemotional during the heated argument.	The customer service representative showed emotional empathy during the heated argument.
 The employee's lack of motivation made it seem discouraging to achieve the project's goals.	The employee's renewed motivation made it seem encouraging to achieve the project's goals.
-The company's actions were unethical and could result in legal consequences.	The company's actions were ethical and aligned with the values of the organization.
-The teacher gave the student an unfair grade, despite their hard work.	The teacher gave the student a fair grade, despite their hard work.
-The construction of the new building was left unfinished due to lack of funds.	The construction of the new building was finished on time and within budget.
-The company's policies were inflexible and made it difficult to adapt to changing circumstances.	The company's policies were flexible and allowed for quick adjustments in response to changing circumstances.
-The new employee's performance seemed unformed, but with proper training, they showed great potential.	The new employee's performance seemed formed, with a clear understanding of their responsibilities and expectations.
-The employee's mistake was unfortunate, but it did not affect the project's outcome.	The employee's mistake was fortunate, as it allowed the team to identify and fix the issue before it became a bigger problem.
-The city's streets were a chaotic mess, with no clear rules or regulations governing traffic.	The city's streets were a well-organized and efficient system, with clear rules and regulations governing traffic.
+The company's actions were unethical and unaligned with the values of the organization.	The company's actions were ethical and aligned with the values of the organization.
+The teacher gave the student an unfair grade, despite their hard work.	The teacher gave the student a fair grade, recognizing their hard work.
+The construction of the new building was left unfinished due to lack of funds.	The construction of the new building was finished on time thanks to adequate funds.
+The company's policies were inflexible and made it difficult to adapt to changing circumstances.	The company's policies were flexible and made it easy to adapt to changing circumstances.
+The new employee's performance seemed unformed, but with unproper training, they showed awful potential.	The new employee's performance seemed formed, and with proper training, they showed great potential.
+The employee's mistake was unfortunate, but it did not affect the project's outcome.	The employee's mistake was fortunate, as it did not affect the project's outcome.
+The city's streets were a chaotic mess, with unclear rules or regulations governing traffic.	The city's streets were a well-organized and efficient system, with clear rules and regulations governing traffic.
 The employee showed ingratitude towards the company by quitting without notice.	The employee showed gratitude towards the company by quitting with proper notice.
 The customer was unhappy with the quality of the product.	The customer was happy with the quality of the product.
-The politician's dishonest claims were exposed by an investigative journalist.	The politician's honest statements were praised by an investigative journalist.
+The politician's dishonest claims were unexposed by an investigative journalist.	The politician's honest claims were exposed by an investigative journalist.
 The new product launch was unimportant to the company's overall strategy.	The new product launch was important to the company's overall strategy.
 The company's profits decreased by 20% last quarter.	The company's profits increased by 20% last quarter.
-The company's success was dependent on the performance of its employees.	The company's success was independent of the performance of its employees.
+The company's success was independent of the performance of its employees.	The company's success was dependent on the performance of its employees.
 The presentation was uninformative and lacked valuable insights.	The presentation was informative and provided valuable insights.
 The students were uninterested in the lesson, and their lack of engagement was evident.	The students were interested in the lesson, and their enthusiasm was contagious.
-The legal system failed to deliver justice to the innocent victim.	The legal system delivered justice to the innocent victim.
+The practice of insider trading is strictly illegal.	The practice of insider trading is strictly legal.
 The company's future plans were unknown to the employees.	The company's future plans were known to the employees.
 The company's actions were illegal and could result in severe consequences.	The company's actions were legal and within the bounds of the law.
 The new employee's chances of getting promoted were unlikely given his lack of experience.	The new employee's chances of getting promoted were likely given his exceptional performance.
 The decision to fire the employee was illogical given their excellent performance.	The decision to fire the employee was logical given their poor performance.
-The employee's actions were disloyal to the company, resulting in disciplinary action.	The employee's actions were loyal to the company, resulting in recognition and reward.
+The employee's actions were disloyal to the company, resulting in disciplinary action.	The employee's actions were loyal to the company, resulting in no disciplinary action.
 The politician's actions were immoral and unethical.	The politician's actions were moral and ethical.
 The new policy is unnecessary and will only cause confusion.	The new policy is necessary to address the recent changes in the industry.
-The employee's behavior was abnormal, causing concern among colleagues.	The employee's behavior was normal, and their productivity increased.
-The child's disobedient behavior caused the teacher to lose patience.	The child's obedient behavior earned the teacher's praise.
+The employee's behavior was abnormal, causing no concern among colleagues.	The employee's behavior was normal, and their productivity increased.
+The child's disobedient behavior did not earn the teacher's praise.	The child's obedient behavior earned the teacher's praise.
 The doctor was impatient with the patient's lack of cooperation during the examination.	The doctor was patient with the patient's lack of cooperation during the examination.
-The new employee's performance was imperfect, but he showed great potential.	The new employee's performance was perfect, and he quickly became an invaluable member of the team.
+The new employee's performance was imperfect, but he showed great potential.	The new employee's performance was perfect, and he showed great potential.
 The customer was rude to the salesperson, making it clear they were not interested in purchasing anything.	The customer was polite to the salesperson, making it clear they were interested in purchasing something.
 The company's goals seemed impossible given the current market conditions.	The company's goals seemed possible given the favorable market conditions.
-The new project seemed impractical given the limited resources available.	The new project seemed practical given the available resources.
-The stock market's movements were unpredictable, causing significant losses for investors.	The stock market's movements were predictable, allowing investors to make informed decisions.
+The new project seemed impractical given the unlimited resources available.	The new project seemed practical given the available resources.
+The stock market's movements were unpredictable, making it difficult for investors to make informed decisions.	The stock market's movements were predictable, allowing investors to make informed decisions.
 The team's meeting was unproductive due to lack of participation.	The team's meeting was productive due to active participation.
-The employee's behavior was unprofessional and unacceptable in the workplace.	The employee's behavior was professional and respectful in the workplace.
+The employee's behavior was unprofessional and disrespectful in the workplace.	The employee's behavior was professional and respectful in the workplace.
 The water in the lake was impure, making it unsafe for drinking.	The water in the lake was pure, making it safe for drinking.
 The customer's demands were irrational and unreasonable.	The customer's demands were rational and reasonable.
 The new software was too complex and unreadable for the team to use.	The new software was too simple and readable for the team to use.
 The project's deadline seemed unrealistic given the complexity of the task.	The project's deadline seemed realistic given the resources available.
 The new employee's work was unrelated to the company's goals.	The new employee's work was related to the company's goals.
-The new employee's work was unreliable, often missing deadlines and making mistakes.	The new employee's work was reliable, consistently meeting deadlines and producing high-quality work.
+The new employee's work was unreliable, often missing deadlines and no making mistakes.	The new employee's work was reliable, consistently meeting deadlines and making mistakes.
 The employee's behavior towards their supervisor was disrespectful.	The employee's behavior towards their supervisor was respectful.
 The company's management was irresponsible in their handling of the crisis.	The company's management was responsible in their handling of the crisis.
-The new employee felt insecure in his new role due to lack of experience.	The new employee felt secure in his new role due to the comprehensive training provided.
+The new employee felt insecure in his new role due to lack of experience.	The new employee felt secure in his new role due to his growing experience.
 The company's new policy was insensitive to the needs of its employees.	The company's new policy was sensitive to the needs of its employees.
 The company's resources were insufficient to meet the demand.	The company's resources were sufficient to meet the demand.
 The new employee's lack of experience made it difficult for him to receive the necessary support from his colleagues.	The new employee's enthusiasm and willingness to learn made it easy for him to receive the necessary support from his colleagues.
@@ -78,7 +79,7 @@ The new virus was insusceptible to the standard treatment.	The new virus was sus
 The customer service representative was unsympathetic to the customer's complaint.	The customer service representative was sympathetic to the customer's complaint.
 The student's desk was a mess, with papers and books scattered everywhere.	The student's desk was neat and organized, with everything in its place.
 The employee's lack of trust in the company's leadership led to a decline in productivity.	The employee's trust in the company's leadership led to an increase in productivity.
-The unusual occurrence of a meteor shower was visible in the night sky.	The usual occurrence of a meteor shower was visible in the night sky.
+The unusual occurrence of a meteor shower was invisible in the night sky.	The usual occurrence of a meteor shower was visible in the night sky.
 The ghost was invisible to the naked eye.	The ghost was visible to the naked eye.
 The new policy is unwanted by many employees.	The new policy is wanted by many employees.
 The employee was unwilling to take on additional responsibilities beyond their job description.	The employee was willing to take on additional responsibilities beyond their job description.
@@ -93,7 +94,7 @@ The children's laughter was a joyless sound in the empty room.	The children's la
 The company's potential for growth seemed limitless.	The company's potential for growth seemed limited by lack of resources.
 The company's competitors were merciless in their pursuit of market share.	The company's competitors were merciful in their willingness to collaborate.
 The employee's work was mindless and repetitive, lacking any sense of purpose or fulfillment.	The employee's work was mindful and purposeful, requiring attention and focus to complete.
-The procedure was painless, and the patient barely felt a thing.	The procedure was painful, and the patient felt extreme discomfort throughout.
+The procedure was painless, and the patient barely felt a thing.	The procedure was painful, and the patient felt a lot of things.
 The employee felt powerless to stop the project from failing.	The employee felt powerful in their ability to save the project from failure.
 The baby was restless during the night, causing the parents to lose sleep.	The baby was restful during the night, allowing the parents to get a good night's sleep.
 The employee's hard work was rewardless as they did not receive a raise.	The employee's hard work was rewarding as they received a well-deserved raise.
@@ -102,7 +103,7 @@ The new policy will make the workplace stressless for employees.	The new policy 
 The new employee's actions were thoughtless, causing chaos in the office.	The new employee's actions were thoughtful, bringing a sense of calm to the office.
 The new employee was untrustworthy and lacked integrity.	The new employee was trustful and reliable, earning the respect of their colleagues.
 The new employee's lack of experience made them useless to the team.	The new employee's unique perspective made them useful to the team.
-The new AI system was designed to be virtueless, able to perform tasks without any moral or ethical considerations.	The new AI system was designed to be virtuous, able to perform tasks with a strong moral and ethical foundation.
+The new AI system was designed to be virtueless, able to perform tasks without any moral or unethical considerations.	The new AI system was designed to be virtuous, able to perform tasks with a strong moral and ethical considerations.
 The family's financial situation seemed hopeless, with no end in sight to their poverty.	The family's financial situation seemed promising, with a bright future ahead of them.
 The restaurant's food was unwholesome and made everyone feel sick.	The restaurant's food was wholesome and made everyone feel great.
 The decision to invest in the new project was unwise given the lack of resources.	The decision to invest in the new project was wise given the potential for growth.
@@ -115,3 +116,18 @@ The teacher gave the student an unfair grade, despite their hard work.	The teach
 The team met infrequently to discuss project progress.	The team met frequently to discuss project progress.
 The team's lack of communication made it difficult to complete projects on time.	The team's effective communication made it easy to complete projects on time.
 The customer was unhappy with the product's quality.	The customer was happy with the product's quality.
+Nobody was unhappy with the product's quality.	The customer was happy with the product's quality.
+Nobody was unhappy with the product's quality.	The customer was happy with the product's quality.
+The garden was unattractive and did not draw many visitors.	The garden was attractive and drew many visitors.
+The pattern on the rug was irregular.	The pattern on the rug was regular.
+The garden was unattractive and drew no visitors.	The garden was attractive and drew many visitors.
+No garden was unattractive and did not draw any visitors.	The garden was attractive and drew many visitors.
+The garden was not attractive and drew few visitors.	The garden was attractive and drew many visitors.
+His irregular schedule and antisocial behavior were challenging for his team.	His regular schedule and social behavior were not challenging for his team.
+Her insecure feelings made the task seem impossible.	Her secure feelings made the task seem possible.
+She was very careless while handling the fragile glassware.	She was very careful while handling the fragile glassware.
+She attends meetings without enthusiasm.	She attends meetings with enthusiasm.
+He approached the debate without confidence.	He approached the debate with confidence.
+The new chair is uncomfortable and does not provide good support.	The new chair is very comfortable and provides excellent support.
+
+

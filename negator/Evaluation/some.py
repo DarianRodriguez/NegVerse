@@ -136,8 +136,8 @@ class Scorer(object):
         # Return scores as a dictionary
         return {
             'grammaticality': average_score_g,
-            'fluency': average_score_f,
-            'total': total_score
+            'fluency': average_score_f
+            #'total': total_score
         }
 
     def predict(self, task):

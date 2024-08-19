@@ -8,9 +8,16 @@ from zss import simple_distance, Node
 from munch import Munch
 
 def compute_lev_distance(doc1, doc2):
+
+    a = [t.text for t in doc1]
+    b = [t.text for t in doc2]
+
     sm = edit_distance.SequenceMatcher(
-        a=[t.text for t in doc1], b=[t.text for t in doc2])
-    return 1-sm.ratio()
+        a=a, b=b)
+    reference_length = max(len(a), len(b))
+    distance = sm.distance()
+    normalized_distance = distance / reference_length if reference_length > 0 else 0.0
+    return normalized_distance
 
 def add_node_to_root(root):
     if not root or not list(root.children):
@@ -45,7 +52,7 @@ def compute_closeness(docs, base_doc, sentence_similarity=None):
         edit_dist=np.mean(edit_dist), 
     )
 
-def compute_self_bleu(docs, base_doc, kwargs=None):
+def compute_self_bleu(docs, kwargs=None):
     # if should just be augments around one example.
     scores = []
     if len(docs) == 0:
@@ -55,8 +62,6 @@ def compute_self_bleu(docs, base_doc, kwargs=None):
     for doc in docs:
         included.append(doc.text)
         data_points.append([d.text for d in doc])
-    included.append(base_doc)
-    data_points.append([d.text for d in base_doc])
 
     points = list(itertools.combinations(range(len(included)), 2))
     for i, j in points:

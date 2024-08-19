@@ -31,14 +31,11 @@ blanks = negator_aug.get_random_blanked_sentences(text,max_blank_sent_count=4, m
 print(blanks)
 
 
-print("############################# MY model ##############")
+print("############################# NegVerse ##############")
 perturbations = negator_aug.perturb(text, blanked_sent = blanks, num_beams=5)
 #perturbations = negator_aug.perturb(text,num_beams=5)
 print(perturbations)
 
-#data_path = './negator/data/nli/RTE.txt'
-#test_data  = process_and_blank_sentences(data_path, sample_size=1, max_blank=2,max_sent=3)
-#print(test_data)
 
 print("############################# Polyjuice #################")
 

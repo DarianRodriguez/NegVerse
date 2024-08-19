@@ -22,7 +22,7 @@ def _normalize_span(span):
     if type(span) == Token: return _normalize_chunk(span.doc, span.i, span.i+1)
     return None
 
-def unify_tags(dep):
+def unify_tags_x(dep):
     norm_dep = dep
     if dep.endswith("mod") or dep in ["poss", "appos", "compound", "meta", "nn", "neg"]:
         # "nummod", "quantmod"
@@ -39,6 +39,27 @@ def unify_tags(dep):
     elif dep == "aux": norm_dep = "aux"
     else: norm_dep = "others"
     return norm_dep
+
+def unify_tags(doc,pos_list,  dep_list):
+
+    matching_indices = []
+
+    if dep_list is not None:
+
+        for i, token in enumerate(doc):
+            dep = token.dep_
+                    
+            norm_dep = dep
+            if dep.endswith("obj"):
+                norm_dep = "obj"
+            elif "subj" in dep:
+                norm_dep = "subj"
+            else: norm_dep = "others"
+
+            if norm_dep in dep_list:
+                matching_indices.append(i)
+
+    return matching_indices
 
 
 def flatten_fillins(doc, indxes, fillins_by_idxes, is_return_text=True):

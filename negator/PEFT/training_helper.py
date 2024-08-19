@@ -38,7 +38,6 @@ def tts_to_labels(inputs, tts, label_tts):
       torch.full_like(inputs, -1))
 
 
-
 def plot_training_loss(train_history, valid_history):
     """
     Plot the training and validation loss over epochs.
@@ -59,15 +58,19 @@ def plot_training_loss(train_history, valid_history):
     plt.plot(epochs, train_history, marker='o', linestyle='-', color='b', label='Training Loss')
     plt.plot(epochs, valid_history, marker='o', linestyle='-', color='r', label='Validation Loss')
     
-    plt.title('Training and Validation Loss per Epoch')
-    plt.xlabel('Epoch')
-    plt.ylabel('Loss')
-    plt.xticks(ticks=epochs)  # Set x-axis ticks to integer values
+    plt.title('Training and Validation Loss per Epoch',fontsize=16, fontweight='bold')
+    plt.xlabel('Epoch',fontsize=15)
+    plt.ylabel('Loss',fontsize=15)
+    
+    plt.xticks(ticks=epochs, fontsize=12)  # Set x-axis ticks to integer values with font size
+    plt.yticks(fontsize=12)  # Set y-axis ticks with font size
+    
     plt.grid(True)
-    plt.legend()
+    plt.legend(fontsize=15)
     
     plt.savefig('./negator/figures/training_validation_loss.png')
     plt.close()
+
 
 
 
@@ -161,10 +164,13 @@ def train_engine(train_loader,valid_loader,train_num_epochs,model, device,num_vi
 
   train_learning_rate = TRAIN_LEARNING_RATE # 5e-5
   train_adam_epsilon = TRAIN_ADAM_EPSILON #1e-8
+  weight_decay = 1e-3
 
   optimizer = AdamW(
-    model.parameters(),
-    lr=train_learning_rate)
+      model.parameters(),
+      lr=train_learning_rate,
+      weight_decay=weight_decay  # Add weight decay
+  )
 
   for i in range(train_num_epochs):
     train_loss = train_fn(train_loader, model, device,optimizer,num_virtual_tokens)
