@@ -1,6 +1,6 @@
 # Negations-LM
 
-This repository contains code for NegVerse: Generating Diverse Negations from Affirmative Sentences and its experiments. 
+This repository contains code for "NegVerse: Generating Diverse Negations from Affirmative Sentences" and its experiments. 
 
 ## Installation 
 Run conda env create -f environment.yml && conda activate negation this will create the environment and install the required libraries. 

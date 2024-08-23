@@ -5,3 +5,8 @@ negator/selectors/NegBERT/*
 # Allow the .gitkeep file in the gfm-models directory to be tracked
 !negator/Evaluation/gfm-models/.gitkeep
 !negator/selectors/NegBERT/.gitkeep
+
+
+__pycache__/
+*.pyc
+*.pyo
