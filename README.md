@@ -56,14 +56,16 @@ blanks = negator_aug.get_random_blanked_sentences(text,max_blank_sent_count=6, m
 perturbations = neg_verse.perturb(text, blanked_sent = blanks, num_beams=5)
 print(perturbations)
 
-#return: ["The kids weren't happy and loved the tea in London.",
-# 'None of the kids were happy and loved the tea in London.',
-# "The kids weren't happy and loved the tea in London.",
-# "The kids weren't happy and disgusted by the tea in London.",
-# 'The kids were not happy and loved the tea in London.',
-# 'The kids were not happy and disgusted by the tea in London.',
-# 'The kids were unhappy and loved the tea in London.',
-# 'None of them were happy and loved the tea in London.']
+#return: [
+#    "The kids weren't happy and loved the tea in London.",
+#    'None of the kids were happy and loved the tea in London.',
+#    "The kids weren't happy and loved the tea in London.",
+#    "The kids weren't happy and disgusted by the tea in London.",
+#    'The kids were not happy and loved the tea in London.',
+#    'The kids were not happy and disgusted by the tea in London.',
+#    'The kids were unhappy and loved the tea in London.',
+#    'None of them were happy and loved the tea in London.'
+# ]
 
 # token-only blanked sentences
 blanks = negator_aug.get_random_blanked_sentences(text,max_blank_sent_count=6, max_blank_block = 2,is_token_only = True)

@@ -4,6 +4,10 @@ import re
 from transformers import pipeline
 from transformers import AutoTokenizer
 import pandas as pd
+from secrets import SECRET_KEY
+
+print(f"Your secret key is: {SECRET_KEY}")
+
 
 
 def setup_model(model_name: str, key: str):
@@ -129,7 +133,7 @@ def save_sentences_to_file(data: pd.DataFrame, model_pipeline, file_path: str):
                 file.write(f"{neg_sentence}\t{pos_sentence}\n")
 
 
-KEY = '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'
+KEY = SECRET_KEY # Enter your key
 model_name = "meta-llama/Llama-2-7b-chat-hf"
 
 # Setup model and pipeline

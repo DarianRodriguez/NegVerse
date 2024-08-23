@@ -1,6 +1,7 @@
 PEFT/test.ipynb
 negator/Evaluation/gfm-models/*
 negator/selectors/NegBERT/*
+negator/generation/secrets.py
 
 # Allow the .gitkeep file in the gfm-models directory to be tracked
 !negator/Evaluation/gfm-models/.gitkeep
