@@ -1,8 +1,7 @@
-draft.ipynb
-Training_incontext/testing.ipynb
-Training_incontext/Prompt_Tuning
-Training_incontext/peft_outputs/
 PEFT/test.ipynb
-negator/Evaluation/gfm-models/
+negator/Evaluation/gfm-models/*
+negator/selectors/NegBERT/*
 
-#dataset/
+# Allow the .gitkeep file in the gfm-models directory to be tracked
+!negator/Evaluation/gfm-models/.gitkeep
+!negator/selectors/NegBERT/.gitkeep

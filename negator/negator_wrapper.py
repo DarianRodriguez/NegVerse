@@ -3,6 +3,7 @@ import numpy as np
 from spacy.tokens import Doc
 from typing import List, Dict, Tuple
 from .Evaluation.semantic_filter import load_distance_scorer
+from .selectors import select_sentences
 from .Evaluation import compute_edit_ops, compute_delta_perplexity,load_perplex_scorer,compute_sent_perplexity
 from .generation_processing import get_outputs
 from .PEFT.training_helper import setup_model
@@ -170,46 +171,29 @@ class Negator(object):
         orig_sent: Tuple[str, Doc], 
         blanked_sent: Tuple[str, List[str]]=None,
         is_complete_blank: bool=False, 
-        perplex_thred: int=10,
-        num_perturbations: int=3,
-        verbose: bool=False, 
+        num_perturbations: int=10,
         #is_include_metadata: bool=True,
         **kwargs) -> List[str]:
-        """The primary perturbation function. Running example:
-        Original sentence: 
-            "It is great for kids."
+        """
+        Generates sentence perturbations by introducing negations or modifications, 
+        particularly handling sentences with blanks (e.g., "It is [BLANK] for kids.").
 
         Args:
             orig_sent (Tuple[str, Doc]): 
-                Original sentence, either in the form of str or SpaCy Doc.
-            blanked_sents (Tuple[str, List[str]], optional): 
-                sentences that contain blanks, e.g., "It is [BLANK] for kids."
-                Defaults to None. If is None, the blank will be automatically placed.
-                If is "" or incomplete form like "It is", set `is_complete_blank` to
-                True below to allow the model to generate where to blank.
+                The original sentence, as a string or SpaCy `Doc`.
+            blanked_sent (Tuple[str, List[str]], optional): 
+                Sentence(s) with blanks; if `None`, blanks are automatically placed.
+                Defaults to `None`.
             is_complete_blank (bool, optional): 
-                Whether the blanked sentence is already complete or not. 
-                Defaults to False.
-            ctrl_codes (Tuple[str, List[str]], optional): 
-                The ctrl code (can be a list). Defaults to None. 
-                If is None, will automatically become [resemantic, lexical,
-                negation, insert, delete]. 
-            perplex_thred (int, optional): 
-                Perplexity filter for fluent perturbations. 
-                we score both x and x' with GPT-2, and filter x' when the 
-                log-probability (on the full sentence or the perturbed chunks) 
-                decreases more than {perplex_thred} points relative to x
-                Defaults to 5. If None, will skip filter.
-            num_perturbations: 
-                Num of max perturbations to collect. Defaults to 3.
-            is_include_metadata: 
-                Whether to return text, or also include other metadata and perplex score.
-                Default to True.
+                Indicates if `blanked_sent` is fully blanked. Defaults to `False`.
+            num_perturbations (int, optional): 
+                Max number of perturbations to generate. Defaults to 10.
             **kwargs: 
-                The function can also take arguments for huggingface generators, 
-                like top_p, num_beams, etc.
+                Additional generation parameters (e.g., `top_p`, `num_beams`).
+
         Returns:
-            List[str]: The perturbations.
+            List[str]: 
+                A list of generated sentence perturbations.
         """
 
         orig_doc = self._process(orig_sent) if type(orig_sent) == str else orig_sent
@@ -229,18 +213,9 @@ class Negator(object):
 
         generated = self.generate_answers(prompts,**kwargs) #num_beams=5
 
-        validated_set = []
-        for sentence in generated:
-            # skip 
-            if sentence in validated_set or sentence.lower() == orig_doc.text.lower(): 
-                continue
-            is_valid = True
-            generated_doc = self._process(sentence)
-            eop = compute_edit_ops(orig_doc, generated_doc)
+        #print("GENERATED IS", generated)
 
-            if perplex_thred is not None:
-                pp = self._compute_delta_perplexity(eop)
-                is_valid = pp.pr_sent < perplex_thred and pp.pr_phrase < perplex_thred
+        filtered_sent = select_sentences(generated,orig_sent,num_perturbations)
 
 
-        return generated
+        return filtered_sent
