@@ -2,6 +2,8 @@
 
 This repository contains code for "NegVerse: Generating Diverse Negations from Affirmative Sentences" and its experiments. 
 
+[[Paper](https://arxiv.org/pdf/2411.00056)]
+
 ## Installation 
 Run conda env create -f environment.yml && conda activate negation this will create the environment and install the required libraries. 
 
@@ -85,4 +87,18 @@ print(perturbations)
 #     'Not kids were happy and loved the tea in London.'
 # ]
 
+```
+
+## BibTeX
+
+```bibtex
+@misc{vasquez2024generatingdiversenegationsaffirmative,
+      title={Generating Diverse Negations from Affirmative Sentences}, 
+      author={Darian Rodriguez Vasquez and Afroditi Papadaki},
+      year={2024},
+      eprint={2411.00056},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL},
+      url={https://arxiv.org/abs/2411.00056}, 
+}
 ```

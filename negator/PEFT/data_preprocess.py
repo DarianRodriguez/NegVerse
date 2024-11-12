@@ -446,5 +446,51 @@ def process_and_blank_sentences(
     return test_blanked
 
 
+def process_and_blank_sentences_hf(
+    data_text, 
+    sample_size=2, 
+    max_blank=1, 
+    max_sent=2, 
+    is_token_only=False
+):
+    """
+    Reads a dataset, samples sentences, and generates blanked sentences.
 
+    Parameters:
+    - data_path: str, path to the dataset file
+    - sample_size: int, number of sentences to sample
+    - max_blank_block: int, maximum number of blanks to apply
+
+    Returns:
+    - List of blanked sentences
+    """
+
+    from ..negator_wrapper import Negator
+    negator_aug = Negator()
+
+    sent_extraction = pd.Series(data_text)
+
+    # Filter out rows where the 'Text' column contains the word 'not'
+    df_filtered = sent_extraction[~sent_extraction.str.contains('not', case=False, na=False)]
+
+    # Sample a specified number of rows from the filtered DataFrame
+    if len(df_filtered) < sample_size:
+        raise ValueError("Sample size is greater than the number of available filtered rows.")
+    
+    #print(len(df_filtered))
+
+    df_sample = df_filtered.sample(n=sample_size,random_state=SEED)
+    sentences = list(df_sample)
+
+    # List to store the blanked sentences
+    test_blanked = []
+
+    # Process each sentence to get blanked versions
+    for sentence in sentences:
+        orig_doc = negator_aug._process(sentence) if type(sentence) == str else sentence
+        blanked_sents = negator_aug.get_random_blanked_sentences(orig_doc, max_blank_block = max_blank,max_blank_sent_count = max_sent,is_token_only=is_token_only)
+        prompts = get_prompts(orig_doc, blanked_sents,is_complete_blank=False)
+        test_blanked.extend(prompts)
+
+    return test_blanked
 
