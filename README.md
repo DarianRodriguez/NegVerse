@@ -1,4 +1,4 @@
-# Negations-LM
+# NegVerse
 
 This repository contains code for "NegVerse: Generating Diverse Negations from Affirmative Sentences" and its experiments. 
 
